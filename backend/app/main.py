@@ -110,7 +110,9 @@ def set_budget(category: Category, data: BudgetIn) -> dict:
 
 
 @app.get("/budgets", response_model=list[BudgetStatus])
-def list_budgets(month: str | None = Query(default=None, description="YYYY-MM; default this month (UTC)")) -> list[dict]:
+def list_budgets(
+    month: str | None = Query(default=None, description="YYYY-MM; default this month (UTC)"),
+) -> list[dict]:
     return rules.budget_status(_summary_for(month), db.list_budgets())
 
 
