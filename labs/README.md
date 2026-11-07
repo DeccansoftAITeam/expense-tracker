@@ -1,7 +1,6 @@
 # Lab Handbook: how the labs work
 
 You do one lab after each module. All labs build **one app**, the **Expense Tracker**, step by step.
-Each lab takes **45–60 minutes**.
 
 ## What you need (install once)
 
@@ -40,56 +39,81 @@ Two boundaries you will test again and again:
 - A **monthly summary** for `2026-11` includes 1 and 30 November, and excludes 1 December. Archived expenses never count.
 - A category is **over budget** when spent is **more than** the limit. Spent **equal** to the limit is **not** over.
 
-## Branches: one per module
+## Branches: the trainer's and yours
+
+Clone the course repository **once**, in Lab M00 (your trainer gives you the address):
 
 ```text
-main
- └─ m00-prompt-engineering
-     └─ m01-how-claude-code-works
-         └─ m02-first-session
-             └─ m03-context-memory
-                 └─ m04-plan-implement-verify
-                     └─ m05-git-worktrees-review
-                         └─ m06-skills
-                             └─ m07-subagents
-                                 └─ m08-orchestration
-                                     └─ m09-permissions
-                                         └─ m10-hooks
-                                             └─ m11-mcp-connect
-                                                 └─ m12-mcp-build
+git clone <course-repo-url> expense-tracker
+cd expense-tracker
 ```
 
-Every lab follows the same pattern:
+It has the trainer's **finished branch for every module**, and a `starter` branch with an empty project:
 
-1. **Start**: create the module branch from the branch of the module before it.
+| Trainer branch (read only) | Holds the app as it is at the end of |
+|---|---|
+| `origin/starter` | nothing yet: README and `.gitignore` |
+| `origin/m00-prompt-engineering` | M00 |
+| `origin/m01-how-claude-code-works` | M01 |
+| `origin/m02-first-session` | M02 |
+| `origin/m03-context-memory` | M03 |
+| `origin/m04-plan-implement-verify` | M04 |
+| `origin/m05-git-worktrees-review` | M05 |
+| `origin/m06-skills` | M06 |
+| `origin/m07-subagents` | M07 |
+| `origin/m08-orchestration` | M08 |
+| `origin/m09-permissions` | M09 |
+| `origin/m10-hooks` | M10 |
+| `origin/m11-mcp-connect` | M11 |
+| `origin/m12-mcp-build` | M12 (the complete app; `origin/main` is the same) |
 
-   ```text
-   git switch m03-context-memory
-   git switch -c m04-plan-implement-verify
-   ```
+**Every lab starts from the trainer's branch of the module before it, never from your own work.** You do each lab on a new branch of your own, `my-m00` to `my-m12`:
 
-2. **Work** through the tasks.
-3. **Finish**: commit, then merge into `main`, so `main` always holds the latest app.
+| Lab | Start command |
+|---|---|
+| M00 | `git switch -c my-m00 origin/starter` |
+| M01 | `git switch -c my-m01 origin/m00-prompt-engineering` |
+| M02 | `git switch -c my-m02 origin/m01-how-claude-code-works` |
+| M03 | `git switch -c my-m03 origin/m02-first-session` |
+| M04 | `git switch -c my-m04 origin/m03-context-memory` |
+| M05 | `git switch -c my-m05 origin/m04-plan-implement-verify` |
+| M06 | `git switch -c my-m06 origin/m05-git-worktrees-review` |
+| M07 | `git switch -c my-m07 origin/m06-skills` |
+| M08 | `git switch -c my-m08 origin/m07-subagents` |
+| M09 | `git switch -c my-m09 origin/m08-orchestration` |
+| M10 | `git switch -c my-m10 origin/m09-permissions` |
+| M11 | `git switch -c my-m11 origin/m10-hooks` |
+| M12 | `git switch -c my-m12 origin/m11-mcp-connect` |
 
-   ```text
-   git add -A
-   git commit -m "M04: monthly summary and category filter"
-   git switch main
-   git merge --no-ff m04-plan-implement-verify -m "Merge M04"
-   git switch m04-plan-implement-verify
-   ```
+Run `git fetch origin` first, so you have the trainer's latest branches.
 
-## Behind? Use the reference branch
-
-Your trainer has a reference copy of the repository with every branch finished. To start lab M05 without M04 done, copy the reference `m04-plan-implement-verify` branch into your repo:
+**Example.** Ravi did not finish Lab M03: archive is still missing on `my-m03`. For Lab M04 he runs:
 
 ```text
-git remote add reference <path-or-url-your-trainer-gives-you>
-git fetch reference
-git switch -c m04-plan-implement-verify reference/m04-plan-implement-verify
+git fetch origin
+git switch -c my-m04 origin/m03-context-memory
 ```
 
-Then start M05 as normal.
+He now has the trainer's complete M03 app and does the M04 tasks on `my-m04`. His `my-m03` is kept as it is; he can finish it later with `git switch my-m03`.
+
+Before you switch to the next lab, commit what you have on your current branch, even if it is not finished:
+
+```text
+git add -A
+git commit -m "wip"
+```
+
+Otherwise your uncommitted changes come along to the new branch.
+
+So you can:
+
+- **Leave a lab unfinished** and still start the next one.
+- **Start at any module**, for example join at M07 with `git switch -c my-m07 origin/m06-skills`.
+- **Compare** your work with the trainer's at the end of a lab: `git diff my-m04 origin/m04-plan-implement-verify --stat`.
+
+At the end of each lab you only commit on your own branch. You never merge into `main` and never push to `origin`.
+
+**Your own GitHub repository.** In Lab M05 you create a private GitHub repo and add it as a second remote named `mine`. M08, M09 and M11 push to it. If you start after M05, do M05 Task 1 once first.
 
 ## Run commands (the same in every lab)
 
