@@ -1,6 +1,6 @@
 # Lab M00: Prompt engineering — write the PRD and TRD
 
-**Time:** 50 minutes · **Tool:** a Claude chat at claude.ai (no Claude Code yet) · **Branch:** `m00-prompt-engineering` (from `main`)
+**Tool:** a Claude chat at claude.ai (no Claude Code yet) · **Your branch:** `my-m00` · **Starts from:** `origin/starter` (an empty project)
 
 ## What you build
 
@@ -11,50 +11,38 @@ Two documents that every later lab builds from:
 
 You practise the M00 techniques: **role**, **context in tags**, **clear scope**, **output format**, **interview first**, **prompt chain**, and **checking for invented facts**.
 
-## Task 1: Create the project folder and repository (5 min)
+## Task 1: Get the course repository and create your branch
+
+You do this clone **once** for the whole course. Your trainer gives you the repository address.
 
 Pick a short folder without spaces, for example `C:\work` on Windows or `~/work` on macOS.
 
 Windows (PowerShell):
 
 ```text
-mkdir C:\work\expense-tracker\docs
-cd C:\work\expense-tracker
-git init -b main
+cd C:\work
+git clone <course-repo-url> expense-tracker
+cd expense-tracker
 ```
 
 macOS (Terminal):
 
 ```text
-mkdir -p ~/work/expense-tracker/docs
-cd ~/work/expense-tracker
-git init -b main
+cd ~/work
+git clone <course-repo-url> expense-tracker
+cd expense-tracker
 ```
 
-Create a file named `.gitignore` in the folder (use VS Code: `code .`) with these lines. You will review it with Claude in M05.
+The repository has the trainer's finished branch for every module (`origin/m00-prompt-engineering` to `origin/m12-mcp-build`) and a `starter` branch with an empty project (a README and a `.gitignore`). Every lab starts the same way: a new branch of your own, made from a trainer branch.
 
 ```text
-.venv/
-__pycache__/
-node_modules/
-dist/
-.env
-.env.*
-backend/expenses.db
-CLAUDE.local.md
-.claude/settings.local.json
-.claude/worktrees/
+git switch -c my-m00 origin/starter
+mkdir docs
 ```
 
-Make the first commit, then create the branch for this lab:
+`git branch` now shows `my-m00`. This is where you work in this lab.
 
-```text
-git add .gitignore
-git commit -m "Initial commit"
-git switch -c m00-prompt-engineering
-```
-
-## Task 2: Warm-up — vague prompt vs. prompt with context (10 min)
+## Task 2: Warm-up — vague prompt vs. prompt with context
 
 Open a **new chat** at claude.ai.
 
@@ -87,7 +75,7 @@ an archived one, and an empty list.
 Compare the two answers. Write down in one line: **which fact changed the code the most?**
 (Usually: "integer paise" and "archived never counts".)
 
-## Task 3: Write the PRD with an interview (15 min)
+## Task 3: Write the PRD with an interview
 
 Open a **new chat**. Paste:
 
@@ -138,7 +126,7 @@ List every number or rule in this PRD that I did not give you. Remove or confirm
 
 Copy the final PRD into `docs/PRD.md` in VS Code and save.
 
-## Task 4: Write the TRD as the next step of the chain (15 min)
+## Task 4: Write the TRD as the next step of the chain
 
 In the **same chat**, paste:
 
@@ -182,14 +170,20 @@ Check the answer:
 
 Copy the final TRD into `docs/TRD.md` and save.
 
-## Task 5: Commit (5 min)
+## Task 5: Commit
 
 ```text
 git add docs
 git commit -m "M00: PRD and TRD for the expense tracker"
-git switch main
-git merge --no-ff m00-prompt-engineering -m "Merge M00"
-git switch m00-prompt-engineering
+```
+
+Your work stays on `my-m00`. You do not need to finish or merge it: the next lab starts from the trainer's `m00-prompt-engineering` branch.
+
+To compare your documents with the trainer's:
+
+```text
+git diff my-m00 origin/m00-prompt-engineering --stat
+git show origin/m00-prompt-engineering:docs/PRD.md
 ```
 
 ## Done when
@@ -198,10 +192,10 @@ git switch m00-prompt-engineering
 - [ ] The PRD has no number you did not give or confirm.
 - [ ] `docs/TRD.md` has the folder layout, data model, API table without DELETE, rules E1–E8 each with a test case, and run commands.
 - [ ] Every ASSUMPTION in the TRD is decided.
-- [ ] Both files are committed on `m00-prompt-engineering` and merged into `main`.
+- [ ] Both files are committed on `my-m00`.
 
 ## If you get stuck
 
 - Claude writes the PRD without asking questions: reply `Stop. Ask me the questions first, one at a time.`
 - The TRD uses floats for money: reply `Rule E1: amounts are integer paise. Fix the data model and every example.`
-- Compare with the reference `docs/PRD.md` and `docs/TRD.md` on branch `m00-prompt-engineering`.
+- Compare with the trainer's documents: `git show origin/m00-prompt-engineering:docs/PRD.md` and `git show origin/m00-prompt-engineering:docs/TRD.md`.
