@@ -39,7 +39,11 @@ def test_archived_expense_never_counts_in_summary():
 
 
 def test_summary_groups_totals_by_category_with_zero_for_empty():
-    expenses = [_expense("2026-11-02", 250, "food"), _expense("2026-11-03", 750, "food"), _expense("2026-11-04", 4000, "bills")]
+    expenses = [
+        _expense("2026-11-02", 250, "food"),
+        _expense("2026-11-03", 750, "food"),
+        _expense("2026-11-04", 4000, "bills"),
+    ]
     summary = rules.summarize_month(expenses, "2026-11")
     assert summary["by_category"]["food"] == 1000
     assert summary["by_category"]["bills"] == 4000

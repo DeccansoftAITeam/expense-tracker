@@ -9,7 +9,9 @@ def _rows(response):
 
 
 def test_export_has_header_and_one_row_per_active_expense(client):
-    client.post("/expenses", json={"description": "Lunch", "amount_paise": 25050, "spent_on": "2026-11-05", "category": "food"})
+    client.post(
+        "/expenses", json={"description": "Lunch", "amount_paise": 25050, "spent_on": "2026-11-05", "category": "food"}
+    )
     archived = client.post("/expenses", json={"description": "Wrong", "amount_paise": 100}).json()
     client.patch(f"/expenses/{archived['id']}", json={"archived": True})
     response = client.get("/expenses/export.csv")

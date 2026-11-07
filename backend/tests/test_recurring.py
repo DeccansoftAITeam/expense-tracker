@@ -22,7 +22,13 @@ def test_next_month_date_keeps_the_day_or_uses_the_last_day(day, expected):
 def _monthly(client, spent_on="2026-01-31"):
     return client.post(
         "/expenses",
-        json={"description": "Rent", "amount_paise": 2500000, "spent_on": spent_on, "category": "bills", "repeat": "monthly"},
+        json={
+            "description": "Rent",
+            "amount_paise": 2500000,
+            "spent_on": spent_on,
+            "category": "bills",
+            "repeat": "monthly",
+        },
     ).json()
 
 
