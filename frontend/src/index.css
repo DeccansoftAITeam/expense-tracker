@@ -111,3 +111,31 @@ a.button {
   text-decoration: none;
   background: #fff;
 }
+
+.tag {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 8px;
+  font-size: 12px;
+  background: #e4e7eb;
+}
+
+.tag.warning {
+  background: #fee4e2;
+  color: #b42318;
+}
+
+.over-budget td {
+  color: #b42318;
+}
+
+.budget {
+  color: #616e7c;
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}

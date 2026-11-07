@@ -75,3 +75,24 @@ def csv_safe(text: str) -> str:
     if text and text[0] in "=+-@":
         return "'" + text
     return text
+
+
+def next_month_date(day: date) -> date:
+    """Same day next month, or the last day of next month when it is shorter.
+
+    2026-01-31 -> 2026-02-28, 2026-12-15 -> 2027-01-15.
+    """
+    year, month = (day.year + 1, 1) if day.month == 12 else (day.year, day.month + 1)
+    last_day = calendar.monthrange(year, month)[1]
+    return date(year, month, min(day.day, last_day))
+
+
+def repeat_problem(expense: dict) -> str | None:
+    """Why this expense cannot be repeated, or None when it can."""
+    if expense["repeat"] != "monthly":
+        return "only monthly expenses can be repeated"
+    if expense["archived"]:
+        return "an archived expense cannot be repeated"
+    if expense["next_id"] is not None:
+        return "this expense was already repeated"
+    return None

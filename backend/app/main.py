@@ -1,7 +1,7 @@
 import csv
 import io
 import logging
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -44,6 +44,7 @@ def create_expense(data: ExpenseCreate) -> dict:
         spent_on=(data.spent_on or now.date()).isoformat(),
         category=data.category,
         payment_method=data.payment_method,
+        repeat=data.repeat,
         created_at=now.isoformat(),
     )
     logger.info("created expense %s", expense["id"])  # E8: id only
@@ -121,3 +122,18 @@ def update_expense(expense_id: int, data: ExpenseUpdate) -> dict:
         raise HTTPException(status_code=404, detail="expense not found")
     logger.info("archived=%s expense %s", data.archived, expense_id)
     return expense
+
+
+@app.post("/expenses/{expense_id}/repeat", status_code=201, response_model=Expense)
+def repeat_expense(expense_id: int) -> dict:
+    """Create next month's copy of a monthly expense (once)."""
+    expense = db.get_expense(expense_id)
+    if expense is None:
+        raise HTTPException(status_code=404, detail="expense not found")
+    problem = rules.repeat_problem(expense)
+    if problem:
+        raise HTTPException(status_code=409, detail=problem)
+    next_spent_on = rules.next_month_date(date.fromisoformat(expense["spent_on"]))
+    copy = db.repeat_expense(expense, next_spent_on.isoformat(), datetime.now(timezone.utc).isoformat())
+    logger.info("repeated expense %s as %s", expense_id, copy["id"])  # E8: ids only
+    return copy

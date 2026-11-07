@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field, field_validator
 
 Category = Literal["food", "transport", "bills", "shopping", "health", "other"]
 PaymentMethod = Literal["cash", "card", "upi", "netbanking"]
+Repeat = Literal["none", "monthly"]
 
 MAX_AMOUNT_PAISE = 10_000_000  # ₹1,00,000 (E4)
 MAX_DESCRIPTION = 120  # E3
@@ -17,6 +18,7 @@ class ExpenseCreate(BaseModel):
     spent_on: date | None = None
     category: Category = "other"
     payment_method: PaymentMethod = "upi"
+    repeat: Repeat = "none"
 
     @field_validator("description")
     @classmethod
@@ -34,6 +36,8 @@ class Expense(BaseModel):
     spent_on: date
     category: Category
     payment_method: PaymentMethod = "upi"
+    repeat: Repeat = "none"
+    next_id: int | None = None  # the copy made by POST /expenses/{id}/repeat
     archived: bool = False
     created_at: str  # UTC, ISO 8601 (E2)
 
