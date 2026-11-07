@@ -1,8 +1,11 @@
+import csv
+import io
 import logging
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 
 from app import db, rules
 from app.models import (
@@ -50,6 +53,35 @@ def create_expense(data: ExpenseCreate) -> dict:
 @app.get("/expenses", response_model=list[Expense])
 def list_expenses(include_archived: bool = False, category: Category | None = None) -> list[dict]:
     return db.list_expenses(include_archived=include_archived, category=category)
+
+
+CSV_COLUMNS = ["id", "spent_on", "description", "category", "payment_method", "amount_rupees"]
+
+
+@app.get("/expenses/export.csv")
+def export_csv() -> Response:
+    """All active (not archived) expenses as CSV, newest first. Dates are YYYY-MM-DD."""
+    buffer = io.StringIO()
+    writer = csv.writer(buffer, lineterminator="\n")
+    writer.writerow(CSV_COLUMNS)
+    expenses = db.list_expenses()
+    for e in expenses:
+        writer.writerow(
+            [
+                e["id"],
+                e["spent_on"],
+                rules.csv_safe(e["description"]),
+                e["category"],
+                e["payment_method"],
+                rules.paise_to_rupee_text(e["amount_paise"]),
+            ]
+        )
+    logger.info("exported %s expenses", len(expenses))  # E8: a count, no descriptions
+    return Response(
+        content=buffer.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="expenses.csv"'},
+    )
 
 
 def _utc_today():
