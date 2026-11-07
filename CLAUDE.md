@@ -28,3 +28,13 @@ Backend dependencies: @backend/pyproject.toml.
 - All database code lives in `backend/app/db.py`; the database file is `backend/expenses.db`.
 - Tests never use `backend/expenses.db`; they use a temporary SQLite file (pytest `tmp_path`).
 - Frontend is JavaScript (`.jsx`), never TypeScript.
+
+## Review rules
+
+- Money is integer paise, never a float (E1).
+- Dates are YYYY-MM-DD; timestamps UTC, ISO 8601 (E2).
+- No clock inside rules.py: pass today in (E7).
+- Never log descriptions or amounts; log the id (E8).
+- Descriptions 1-120 chars; archive, never delete (E3, E6).
+- No new dependency without a person's approval.
+- Every new endpoint has a test in backend/tests/.
