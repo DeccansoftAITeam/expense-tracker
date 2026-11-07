@@ -31,3 +31,5 @@ export function setArchived(id, archived) {
 export function getSummary(month) {
   return request(`/expenses/summary?month=${encodeURIComponent(month)}`)
 }
+
+export const EXPORT_CSV_URL = `${API_URL}/expenses/export.csv`

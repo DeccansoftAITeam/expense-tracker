@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { createExpense, listExpenses, setArchived } from './api.js'
+import { EXPORT_CSV_URL, createExpense, listExpenses, setArchived } from './api.js'
 import CategoryFilter from './components/CategoryFilter.jsx'
 import ExpenseForm from './components/ExpenseForm.jsx'
 import ExpenseList from './components/ExpenseList.jsx'
@@ -43,6 +43,9 @@ function App() {
           <input type="checkbox" checked={showArchived} onChange={(e) => setShowArchived(e.target.checked)} /> Show
           archived
         </label>
+        <a className="button" href={EXPORT_CSV_URL} download="expenses.csv">
+          Export CSV
+        </a>
       </div>
       <ExpenseList expenses={expenses.filter((e) => matchesSearch(e, search))} onArchive={handleArchive} />
       <MonthlySummary refreshKey={version} />

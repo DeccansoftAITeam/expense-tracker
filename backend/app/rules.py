@@ -61,3 +61,17 @@ def budget_status(summary: dict, budgets: Iterable[dict]) -> list[dict]:
             }
         )
     return result
+
+
+def paise_to_rupee_text(paise: int) -> str:
+    """25050 -> "250.50", using integer maths only (E1)."""
+    sign = "-" if paise < 0 else ""
+    rupees, rest = divmod(abs(paise), 100)
+    return f"{sign}{rupees}.{rest:02d}"
+
+
+def csv_safe(text: str) -> str:
+    """Stop spreadsheet apps from running a cell as a formula."""
+    if text and text[0] in "=+-@":
+        return "'" + text
+    return text
