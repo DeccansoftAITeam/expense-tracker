@@ -1,6 +1,6 @@
 # Lab M03: Context and memory
 
-**Time:** 60 minutes · **Branch:** `m03-context-memory` (from `m02-first-session`)
+**Your branch:** `my-m03` · **Starts from:** `origin/m02-first-session` (the trainer's finished M02)
 
 ## What you build
 
@@ -12,12 +12,14 @@
 
 ## Before you start
 
+Start from the trainer's finished M02 branch, even if your own `my-m02` is not finished. Your `my-m02` branch stays as it is; you can go back to it any time with `git switch my-m02`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m02-first-session
-git switch -c m03-context-memory
+git fetch origin
+git switch -c my-m03 origin/m02-first-session
 ```
 
-## Task 1: Create CLAUDE.md with /init and add the rules (10 min)
+## Task 1: Create CLAUDE.md with /init and add the rules
 
 ```text
 claude
@@ -51,7 +53,7 @@ How should I store an expense of ₹99.90 and the time it was created?
 
 **Expected:** `9990` paise and a UTC ISO 8601 timestamp, taken from your rules.
 
-## Task 2: Look at what loads with /memory and /context (5 min)
+## Task 2: Look at what loads with /memory and /context
 
 ```text
 /memory
@@ -73,7 +75,7 @@ Which endpoints does the TRD list that we have not built yet?
 
 **Expected:** PATCH, summary and budgets, answered from the imported TRD.
 
-## Task 3: AGENTS.md in more than one folder (8 min)
+## Task 3: AGENTS.md in more than one folder
 
 Create `AGENTS.md` in the project root with:
 
@@ -106,7 +108,7 @@ Open backend/app/main.py and explain the POST /expenses route.
 
 Run `/context` again. **Expected:** `backend/AGENTS.md` is now listed. Files in sub-folders load only when Claude works there.
 
-## Task 4: Store expenses in SQLite, with a path rule (12 min)
+## Task 4: Store expenses in SQLite, with a path rule
 
 Create `.claude/rules/backend.md`:
 
@@ -142,7 +144,7 @@ uv run uvicorn app.main:app --reload
 
 Add an expense at http://localhost:8000/docs, stop the server (**Ctrl+C**), start it again, and **GET /expenses**. **Expected:** the expense is still there. `git status` must **not** show `backend/expenses.db`.
 
-## Task 5: Archive, never delete — rules a reviewer can check (10 min)
+## Task 5: Archive, never delete — rules a reviewer can check
 
 Create `.claude/rules/tests.md`:
 
@@ -180,7 +182,7 @@ Read the diff:
 Run `/context`: `backend/tests/CLAUDE.md` and the tests rule are listed.
 Run `cd backend` then `uv run pytest -q`, and try the button at http://localhost:5173.
 
-## Task 6: Auto memory (5 min)
+## Task 6: Auto memory
 
 ```text
 Remember that I prefer short answers without a summary at the end.
@@ -200,7 +202,7 @@ Team rules belong in `CLAUDE.md`, not in your personal memory:
 Add this to CLAUDE.md: tests never use backend/expenses.db; they use a temporary SQLite file.
 ```
 
-## Task 7: What survives /compact, and a quick audit (10 min)
+## Task 7: What survives /compact, and a quick audit
 
 ```text
 From now on, always answer in British English.
@@ -229,9 +231,14 @@ Add two conflicting lines and a missing path to `CLAUDE.md`:
 ```text
 git add -A
 git commit -m "M03: CLAUDE.md rules, AGENTS.md, SQLite and archive"
-git switch main
-git merge --no-ff m03-context-memory -m "Merge M03"
-git switch m03-context-memory
+```
+
+Your work stays on `my-m03`. You do not need to finish or merge it: the next lab starts from the trainer's `m03-context-memory` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m03 origin/m03-context-memory --stat
 ```
 
 ## Done when
@@ -242,10 +249,10 @@ git switch m03-context-memory
 - [ ] Expenses survive a backend restart; `backend/expenses.db` is not in `git status`.
 - [ ] `PATCH /expenses/{id}` archives and restores; `DELETE` returns 405; tests pass.
 - [ ] The UI has Archive/Restore buttons and a "Show archived" box.
-- [ ] The work is committed and merged into `main`.
+- [ ] Your work is committed on `my-m03`.
 
 ## If you get stuck
 
 - The rule file never loads: check that `paths:` is the only frontmatter field and the glob is relative to the project root.
 - Tests create `backend/expenses.db`: ask `Make every test use the client fixture in tests/conftest.py with a tmp_path database.`
-- Compare with the reference branch `m03-context-memory`.
+- Compare with the trainer's branch: `git diff my-m03 origin/m03-context-memory --stat`, and open any file with `git show origin/m03-context-memory:<path>`.

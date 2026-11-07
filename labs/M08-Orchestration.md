@@ -1,6 +1,6 @@
 # Lab M08: Orchestration
 
-**Time:** 60 minutes · **Branch:** `m08-orchestration` (from `m07-subagents`)
+**Your branch:** `my-m08` · **Starts from:** `origin/m07-subagents` (the trainer's finished M07)
 
 ## What you build
 
@@ -16,9 +16,11 @@
 
 ## Before you start
 
+Start from the trainer's finished M07 branch, even if your own `my-m07` is not finished. Your `my-m07` branch stays as it is; you can go back to it any time with `git switch my-m07`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m07-subagents
-git switch -c m08-orchestration
+git fetch origin
+git switch -c my-m08 origin/m07-subagents
 ```
 
 Windows: `mkdir docs\requests` · macOS: `mkdir -p docs/requests`
@@ -32,7 +34,7 @@ Rent, the phone bill and the gym come back every month. Users can mark an expens
 monthly. With one click on that expense, next month's copy appears with the next date.
 ```
 
-## Task 1: Create the pipeline agents with contracts (8 min)
+## Task 1: Create the pipeline agents with contracts
 
 ```text
 claude
@@ -59,7 +61,7 @@ Use the analyst on docs/requests/recurring-expenses.md.
 
 **Expected:** a SPEC with the fixed headings.
 
-## Task 2: Run the pipeline (15 min)
+## Task 2: Run the pipeline
 
 ```text
 Build recurring monthly expenses as a pipeline. Show me each result before the next step.
@@ -88,7 +90,7 @@ cd backend
 uv run pytest -q
 ```
 
-## Task 3: Fan-out review, then an evaluator loop (12 min)
+## Task 3: Fan-out review, then an evaluator loop
 
 ```text
 Create two read-only agents in .claude/agents/: correctness-reviewer (bugs, wrong boundaries such as
@@ -122,7 +124,7 @@ Watch the rounds. Then check the fixes stayed small:
 git diff main...HEAD --stat
 ```
 
-## Task 4: A router (8 min)
+## Task 4: A router
 
 ```text
 Create a router agent in .claude/agents/router.md: model haiku, tools Read. It replies with exactly
@@ -142,7 +144,7 @@ to the agent it names. On ROUTE: human, stop and tell me. Do not do the work you
 
 Try one more ticket: `"Should budgets roll over unspent money to next month?"` **Expected:** `ROUTE: human`.
 
-## Task 5: A dynamic workflow, saved as a command (10 min)
+## Task 5: A dynamic workflow, saved as a command
 
 ```text
 use a workflow to audit every .py file in backend/app/ for rule E8 (no descriptions or amounts
@@ -161,7 +163,7 @@ Select the run and press **Enter**. Drill into the audit phase and open one agen
 /audit-e8
 ```
 
-## Task 6: End to end (5 min)
+## Task 6: End to end
 
 Try the feature at http://localhost:5173 (backend and frontend running):
 
@@ -169,9 +171,16 @@ Try the feature at http://localhost:5173 (backend and frontend running):
 2. Click **Repeat next month**. A copy appears dated the last day of this month (or the 31st, when this month has 31 days).
 3. The button is gone from the original; the copy has its own button.
 
+Give the pull request a base that shows only this lab's changes: push the trainer's starting point to your repository (remote `mine`, from M05) as `m07-base`:
+
 ```text
-Push this branch and open a pull request against main with gh. Body: what, why, how to test,
-and the acceptance criteria from the SPEC. Do not merge.
+git push mine origin/m07-subagents:refs/heads/m07-base
+```
+
+```text
+Push this branch to the remote mine. Open a pull request with gh on my repository expense-tracker
+from my-m08 into m07-base. Body: what, why, how to test, and the acceptance criteria from the SPEC.
+Do not merge.
 ```
 
 ## Finish
@@ -179,9 +188,14 @@ and the acceptance criteria from the SPEC. Do not merge.
 ```text
 git add -A
 git commit -m "M08: orchestration agents, recurring expenses, over-budget warning"
-git switch main
-git merge --no-ff m08-orchestration -m "Merge M08"
-git switch m08-orchestration
+```
+
+Your work stays on `my-m08`. You do not need to finish or merge it: the next lab starts from the trainer's `m08-orchestration` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m08 origin/m08-orchestration --stat
 ```
 
 ## Done when
@@ -198,4 +212,4 @@ git switch m08-orchestration
 - The implementer edits a test: remind it `You may not edit backend/tests/. Return BLOCKED and explain.`
 - The loop never ends: check the prompt has all three exits (APPROVE, same finding twice, round 3).
 - `use a workflow` does nothing: run `claude update`; workflows need a recent version.
-- Compare with the reference branch `m08-orchestration` (the saved workflow is not in it: yours is generated in class).
+- Compare with the trainer's branch: `git diff my-m08 origin/m08-orchestration --stat`, and open any file with `git show origin/m08-orchestration:<path>` (the saved workflow is not in it: yours is generated in class).

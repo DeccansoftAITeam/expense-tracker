@@ -1,6 +1,6 @@
 # Lab M06: Skills — build, compose, test, share
 
-**Time:** 60 minutes · **Branch:** `m06-skills` (from `m05-git-worktrees-review`)
+**Your branch:** `my-m06` · **Starts from:** `origin/m05-git-worktrees-review` (the trainer's finished M05)
 
 ## What you build
 
@@ -16,12 +16,14 @@ Skills in `.claude/skills/`, and the features they produce:
 
 ## Before you start
 
+Start from the trainer's finished M05 branch, even if your own `my-m05` is not finished. Your `my-m05` branch stays as it is; you can go back to it any time with `git switch my-m05`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m05-git-worktrees-review
-git switch -c m06-skills
+git fetch origin
+git switch -c my-m06 origin/m05-git-worktrees-review
 ```
 
-## Task 1: Your first skill, and where skills live (5 min)
+## Task 1: Your first skill, and where skills live
 
 Windows: `mkdir .claude\skills\hello` · macOS: `mkdir -p .claude/skills/hello`
 
@@ -45,7 +47,7 @@ claude
 
 Change the body to `Say hello in Hindi.` and type `/hello` again: no restart needed. Then type `/skills`, filter with `re`, and look at the token cost column. Delete the `hello` folder when you are done.
 
-## Task 2: add-expense-field — a skill with a checklist (15 min)
+## Task 2: add-expense-field — a skill with a checklist
 
 Create `.claude/skills/add-expense-field/SKILL.md`:
 
@@ -96,7 +98,7 @@ Run the backend and frontend, and add an expense paid by **card** at http://loca
 
 **Weak vs. strong description.** Change the description to `Helps with expenses`. In a new session ask: `Expenses need a notes field of up to 200 characters. Plan it, don't build it.` The skill is **not** loaded. Put the strong description back, start a new session, and ask the same: this time the skill line appears before Claude starts. Press **Esc**; you will not build notes.
 
-## Task 3: new-component — arguments (10 min)
+## Task 3: new-component — arguments
 
 Vitest is needed for component tests. Ask:
 
@@ -136,7 +138,7 @@ Use AmountBadge for the amount column in ExpenseList.jsx.
 
 Run `cd frontend` then `npm test`, and check the highlighted amounts at http://localhost:5173.
 
-## Task 4: my-changes — live data with !command (5 min)
+## Task 4: my-changes — live data with !command
 
 Create `.claude/skills/my-changes/SKILL.md`:
 
@@ -165,7 +167,7 @@ logger.info("created expense %s", expense["description"])
 Ask in plain words: `What did I change?`
 **Expected:** Claude loads `my-changes`, shows the summary, and flags the description in the log (E8). Undo it: `git restore backend/app/main.py`.
 
-## Task 5: expense-test-audit — a script and a reference file (8 min)
+## Task 5: expense-test-audit — a script and a reference file
 
 ```text
 Create .claude/skills/expense-test-audit/scripts/list_expense_tests.py that prints every pytest
@@ -202,7 +204,7 @@ On macOS, if `python` is not found, use `python3` in both places.
 
 **Expected:** the script runs without a prompt; Claude reports that it cannot edit files in this skill and lists the renames instead. Run `/context`: the script's source is not in context, only its output.
 
-## Task 6: review-expense-change — a forked, read-only review (8 min)
+## Task 6: review-expense-change — a forked, read-only review
 
 Create `.claude/skills/review-expense-change/SKILL.md`:
 
@@ -239,7 +241,7 @@ Commit it (`git commit -am "temp: log amount"`), then:
 
 Watch the subagent start. **Expected:** E8 is marked as a problem with the quoted line. Run `/context`: the files the subagent read are not in your context. Undo the temp commit: `git reset --hard HEAD~1`.
 
-## Task 7: Test a skill (4 min)
+## Task 7: Test a skill
 
 In three **fresh** sessions, ask and note whether `add-expense-field` loads:
 
@@ -256,9 +258,14 @@ Then type `/skill-doctor` and read the report.
 ```text
 git add -A
 git commit -m "M06: skills, payment method and AmountBadge"
-git switch main
-git merge --no-ff m06-skills -m "Merge M06"
-git switch m06-skills
+```
+
+Your work stays on `my-m06`. You do not need to finish or merge it: the next lab starts from the trainer's `m06-skills` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m06 origin/m06-skills --stat
 ```
 
 ## Done when
@@ -273,4 +280,4 @@ git switch m06-skills
 
 - `/new-component` gets `$name` literally: check the `arguments: [name, folder]` line.
 - The old database fails with "no such column payment_method": ask `Add the column on connect when it is missing, with ALTER TABLE in backend/app/db.py.`
-- Compare with the reference branch `m06-skills`.
+- Compare with the trainer's branch: `git diff my-m06 origin/m06-skills --stat`, and open any file with `git show origin/m06-skills:<path>`.
