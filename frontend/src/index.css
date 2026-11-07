@@ -17,3 +17,47 @@ body {
 h1 {
   margin-top: 0;
 }
+
+.expense-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.expense-form input,
+.expense-form select,
+.expense-form button,
+.toolbar select,
+.toolbar input,
+.toolbar button {
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+.error {
+  color: #b42318;
+  width: 100%;
+  margin: 0;
+}
+
+.expense-list {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.expense-list th,
+.expense-list td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid #e4e7eb;
+}
+
+.amount {
+  text-align: right !important;
+}
+
+.empty {
+  color: #616e7c;
+}
