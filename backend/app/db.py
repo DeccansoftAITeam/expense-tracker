@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS expenses (
     spent_on TEXT NOT NULL,
     category TEXT NOT NULL DEFAULT 'other',
     payment_method TEXT NOT NULL DEFAULT 'upi',
+    repeat TEXT NOT NULL DEFAULT 'none',
+    next_id INTEGER,
     archived INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL
 );
@@ -29,6 +31,8 @@ CREATE TABLE IF NOT EXISTS budgets (
 # Columns added after the first release. An older expenses.db gets them on connect.
 ADDED_COLUMNS = {
     "payment_method": "TEXT NOT NULL DEFAULT 'upi'",
+    "repeat": "TEXT NOT NULL DEFAULT 'none'",
+    "next_id": "INTEGER",
 }
 
 
@@ -60,12 +64,13 @@ def insert_expense(
     category: str,
     created_at: str,
     payment_method: str = "upi",
+    repeat: str = "none",
 ) -> dict:
     with closing(connect()) as conn, conn:
         cursor = conn.execute(
-            "INSERT INTO expenses (description, amount_paise, spent_on, category, payment_method, created_at)"
-            " VALUES (?, ?, ?, ?, ?, ?)",
-            (description, amount_paise, spent_on, category, payment_method, created_at),
+            "INSERT INTO expenses (description, amount_paise, spent_on, category, payment_method, repeat, created_at)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (description, amount_paise, spent_on, category, payment_method, repeat, created_at),
         )
         row = conn.execute("SELECT * FROM expenses WHERE id = ?", (cursor.lastrowid,)).fetchone()
     return _to_dict(row)
@@ -122,3 +127,24 @@ def list_budgets() -> list[dict]:
     with closing(connect()) as conn:
         rows = conn.execute("SELECT * FROM budgets ORDER BY category").fetchall()
     return [dict(r) for r in rows]
+
+
+def repeat_expense(expense: dict, next_spent_on: str, created_at: str) -> dict:
+    """Insert next month's copy and link it from the original, in one transaction."""
+    with closing(connect()) as conn, conn:
+        cursor = conn.execute(
+            "INSERT INTO expenses (description, amount_paise, spent_on, category, payment_method, repeat, created_at)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (
+                expense["description"],
+                expense["amount_paise"],
+                next_spent_on,
+                expense["category"],
+                expense["payment_method"],
+                expense["repeat"],
+                created_at,
+            ),
+        )
+        conn.execute("UPDATE expenses SET next_id = ? WHERE id = ?", (cursor.lastrowid, expense["id"]))
+        row = conn.execute("SELECT * FROM expenses WHERE id = ?", (cursor.lastrowid,)).fetchone()
+    return _to_dict(row)

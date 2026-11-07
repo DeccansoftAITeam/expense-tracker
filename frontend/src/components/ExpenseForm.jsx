@@ -14,6 +14,7 @@ function ExpenseForm({ onAdd }) {
   const [spentOn, setSpentOn] = useState(today())
   const [category, setCategory] = useState('other')
   const [paymentMethod, setPaymentMethod] = useState('upi')
+  const [monthly, setMonthly] = useState(false)
   const [error, setError] = useState('')
 
   async function handleSubmit(event) {
@@ -24,9 +25,10 @@ function ExpenseForm({ onAdd }) {
       return
     }
     try {
-      await onAdd({ description, amount_paise: amountPaise, spent_on: spentOn, category, payment_method: paymentMethod })
+      await onAdd({ description, amount_paise: amountPaise, spent_on: spentOn, category, payment_method: paymentMethod, repeat: monthly ? 'monthly' : 'none' })
       setDescription('')
       setAmount('')
+      setMonthly(false)
       setError('')
     } catch (err) {
       setError(err.message)
@@ -63,6 +65,9 @@ function ExpenseForm({ onAdd }) {
           </option>
         ))}
       </select>
+      <label>
+        <input type="checkbox" checked={monthly} onChange={(e) => setMonthly(e.target.checked)} /> Repeats monthly
+      </label>
       <button type="submit">Add</button>
       {error && <p className="error">{error}</p>}
     </form>

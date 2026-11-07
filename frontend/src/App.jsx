@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { EXPORT_CSV_URL, createExpense, listExpenses, setArchived } from './api.js'
+import { EXPORT_CSV_URL, createExpense, listExpenses, repeatExpense, setArchived } from './api.js'
 import CategoryFilter from './components/CategoryFilter.jsx'
 import ExpenseForm from './components/ExpenseForm.jsx'
 import ExpenseList from './components/ExpenseList.jsx'
@@ -27,6 +27,11 @@ function App() {
     await refresh()
   }
 
+  async function handleRepeat(id) {
+    await repeatExpense(id)
+    await refresh()
+  }
+
   async function handleArchive(id, archived) {
     await setArchived(id, archived)
     await refresh()
@@ -47,7 +52,11 @@ function App() {
           Export CSV
         </a>
       </div>
-      <ExpenseList expenses={expenses.filter((e) => matchesSearch(e, search))} onArchive={handleArchive} />
+      <ExpenseList
+        expenses={expenses.filter((e) => matchesSearch(e, search))}
+        onArchive={handleArchive}
+        onRepeat={handleRepeat}
+      />
       <MonthlySummary refreshKey={version} />
     </main>
   )

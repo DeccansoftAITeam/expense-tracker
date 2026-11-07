@@ -33,3 +33,11 @@ export function getSummary(month) {
 }
 
 export const EXPORT_CSV_URL = `${API_URL}/expenses/export.csv`
+
+export function repeatExpense(id) {
+  return request(`/expenses/${id}/repeat`, { method: 'POST' })
+}
+
+export function getBudgets(month) {
+  return request(`/budgets?month=${encodeURIComponent(month)}`)
+}

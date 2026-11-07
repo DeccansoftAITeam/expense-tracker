@@ -1,6 +1,6 @@
 import AmountBadge from './AmountBadge.jsx'
 
-function ExpenseList({ expenses, onArchive }) {
+function ExpenseList({ expenses, onArchive, onRepeat }) {
   if (expenses.length === 0) {
     return <p className="empty">No expenses yet</p>
   }
@@ -20,13 +20,21 @@ function ExpenseList({ expenses, onArchive }) {
         {expenses.map((expense) => (
           <tr key={expense.id} className={expense.archived ? 'archived' : ''}>
             <td>{expense.spent_on}</td>
-            <td>{expense.description}</td>
+            <td>
+              {expense.description}
+              {expense.repeat === 'monthly' && <span className="tag">monthly</span>}
+            </td>
             <td>{expense.category}</td>
             <td>{expense.payment_method}</td>
             <td className="amount">
               <AmountBadge paise={expense.amount_paise} />
             </td>
-            <td>
+            <td className="actions">
+              {expense.repeat === 'monthly' && expense.next_id === null && !expense.archived && (
+                <button type="button" onClick={() => onRepeat(expense.id)}>
+                  Repeat next month
+                </button>
+              )}
               <button type="button" onClick={() => onArchive(expense.id, !expense.archived)}>
                 {expense.archived ? 'Restore' : 'Archive'}
               </button>
