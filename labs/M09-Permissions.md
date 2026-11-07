@@ -1,6 +1,6 @@
 # Lab M09: Permissions and workspace trust
 
-**Time:** 50 minutes · **Branch:** `m09-permissions` (from `m08-orchestration`)
+**Your branch:** `my-m09` · **Starts from:** `origin/m08-orchestration` (the trainer's finished M08)
 
 ## What you build
 
@@ -14,14 +14,16 @@ And a `backend/.env.example`, checked with `/permissions`, a fresh clone and `cl
 
 ## Before you start
 
+Start from the trainer's finished M08 branch, even if your own `my-m08` is not finished. Your `my-m08` branch stays as it is; you can go back to it any time with `git switch my-m08`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m08-orchestration
-git switch -c m09-permissions
+git fetch origin
+git switch -c my-m09 origin/m08-orchestration
 ```
 
 Keep **Manual** mode for this whole lab, so every prompt is visible.
 
-## Task 1: Modes, and auto mode is not a guarantee (6 min)
+## Task 1: Modes, and auto mode is not a guarantee
 
 ```text
 claude
@@ -41,7 +43,7 @@ Force-push the current branch to origin.
 
 **Expected:** the classifier blocks it. Run `/permissions` and open **Recently denied**. Press **Esc** and switch back to **Manual**.
 
-## Task 2: Write the team rules (10 min)
+## Task 2: Write the team rules
 
 ```text
 Create .claude/settings.json with these permissions:
@@ -62,7 +64,7 @@ Approve the edit (it is a protected path, so it always asks). Now test each list
 
 Run `/permissions` and find each rule and the file it came from.
 
-## Task 3: Compound commands and wrappers (6 min)
+## Task 3: Compound commands and wrappers
 
 | Prompt | Expected |
 |---|---|
@@ -70,7 +72,7 @@ Run `/permissions` and find each rule and the file it came from.
 | `Run timeout 60 uv run pytest -q in backend.` | No prompt: the `timeout` wrapper is stripped |
 | `Run git status && git push.` | A prompt: one part matches the ask rule. Choose **No** |
 
-## Task 4: Precedence — a user deny beats a project allow (6 min)
+## Task 4: Precedence — a user deny beats a project allow
 
 Open your user settings:
 
@@ -94,7 +96,7 @@ Build the frontend.
 
 **Expected:** denied, although the project allows it. Run `/permissions` to see the deny and its source. **Remove** the line from your user settings again.
 
-## Task 5: Keep secrets away from Claude (10 min)
+## Task 5: Keep secrets away from Claude
 
 Create `backend/.env` (it is git-ignored) with two lines:
 
@@ -125,14 +127,14 @@ Run python -c "print(open('backend/.env').read())"
 
 **Expected:** a normal approval prompt for a shell command. Choose **No**. The deny rule alone would **not** have stopped a script that opens the file itself. Hard limits need the sandbox (`/sandbox`, macOS/Linux/WSL2) or keeping real secrets out of the project folder.
 
-## Task 6: Workspace trust and claude -p (10 min)
+## Task 6: Workspace trust and claude -p
 
-Commit and push the settings file:
+Commit the settings file and push it to your own repository (remote `mine`, from M05):
 
 ```text
 git add .claude/settings.json backend/.env.example
 git commit -m "Add team permission rules and an env example"
-git push -u origin m09-permissions
+git push -u mine my-m09
 ```
 
 Clone it into a new folder next to your project and switch to the branch:
@@ -141,10 +143,10 @@ Clone it into a new folder next to your project and switch to the branch:
 cd ..
 git clone https://github.com/<you>/expense-tracker expense-tracker-copy
 cd expense-tracker-copy
-git switch m09-permissions
+git switch my-m09
 ```
 
-No GitHub? Use `git clone expense-tracker expense-tracker-copy` from the parent folder instead.
+No GitHub? Use `git clone expense-tracker expense-tracker-copy` from the parent folder instead, then `git switch my-m09`.
 
 **Before** opening it interactively, run:
 
@@ -171,9 +173,14 @@ claude
 ```text
 git add -A
 git commit -m "M09: team permissions"
-git switch main
-git merge --no-ff m09-permissions -m "Merge M09"
-git switch m09-permissions
+```
+
+Your work stays on `my-m09`. You do not need to finish or merge it: the next lab starts from the trainer's `m09-permissions` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m09 origin/m09-permissions --stat
 ```
 
 ## Done when
@@ -188,4 +195,4 @@ git switch m09-permissions
 
 - A rule seems ignored: check `/permissions` for a typo, then run `claude doctor` for malformed entries.
 - `Write(...)` rules never match: file writes are checked against `Edit(...)` rules.
-- Compare with the reference branch `m09-permissions`.
+- Compare with the trainer's branch: `git diff my-m09 origin/m09-permissions --stat`, and open any file with `git show origin/m09-permissions:<path>`.

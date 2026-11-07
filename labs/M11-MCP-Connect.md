@@ -1,6 +1,6 @@
 # Lab M11: MCP in Claude Code
 
-**Time:** 60 minutes · **Branch:** `m11-mcp-connect` (from `m10-hooks`)
+**Your branch:** `my-m11` · **Starts from:** `origin/m10-hooks` (the trainer's finished M10)
 
 ## What you build
 
@@ -16,15 +16,17 @@ And a Playwright test suite, `frontend/e2e/expenses.spec.js`, run with `npm run 
 
 ## Before you start
 
+Start from the trainer's finished M10 branch, even if your own `my-m10` is not finished. Your `my-m10` branch stays as it is; you can go back to it any time with `git switch my-m10`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m10-hooks
-git switch -c m11-mcp-connect
+git fetch origin
+git switch -c my-m11 origin/m10-hooks
 node --version
 ```
 
 Node.js 22 or newer is needed for `npx` servers.
 
-## Task 1: A project-scoped filesystem server (10 min)
+## Task 1: A project-scoped filesystem server
 
 ```text
 claude mcp add --scope project --transport stdio filesystem -- npx -y @modelcontextprotocol/server-filesystem ./docs
@@ -60,7 +62,7 @@ Use the filesystem server to create docs/notes.md with one line "hello".
 
 **Expected:** denied. Run `/permissions` to see the rule.
 
-## Task 2: The GitHub server (10 min)
+## Task 2: The GitHub server
 
 Create a fine-grained **personal access token** on GitHub (Settings → Developer settings) with access to your `expense-tracker` repository: Contents, Issues and Pull requests (read and write). Set it in your terminal **before** starting Claude:
 
@@ -96,7 +98,7 @@ Open the issue on GitHub. Keep its number for later.
 
 No GitHub token in class? Skip this task; the rest of the lab works without it.
 
-## Task 3: Let Claude test the app in a browser (12 min)
+## Task 3: Let Claude test the app in a browser
 
 ```text
 claude mcp add --scope project playwright -- npx -y @playwright/mcp@latest
@@ -128,7 +130,7 @@ Tell me if each step worked, and if amounts show as rupees with 2 decimals.
 
 Watch the browser window: Claude clicks and types for real, and reports back.
 
-## Task 4: Turn the checks into Playwright tests (15 min)
+## Task 4: Turn the checks into Playwright tests
 
 ```text
 cd frontend
@@ -156,7 +158,7 @@ npm run e2e
 
 **Expected:** 7 passed. Try the UI mode: `npx playwright test --ui`.
 
-## Task 5: Put it together (8 min)
+## Task 5: Put it together
 
 If you did Task 2:
 
@@ -178,12 +180,15 @@ Then check what loads, and the token cost of your servers:
 ```text
 git add -A
 git commit -m "M11: MCP servers and Playwright e2e tests"
-git switch main
-git merge --no-ff m11-mcp-connect -m "Merge M11"
-git switch m11-mcp-connect
 ```
 
-Check that `.mcp.json` is committed, and that your token is **not** in any committed file (`git grep -n ghp_` finds nothing).
+Your work stays on `my-m11`. You do not need to finish or merge it: the next lab starts from the trainer's `m11-mcp-connect` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m11 origin/m11-mcp-connect --stat
+```
 
 ## Done when
 
@@ -198,4 +203,4 @@ Check that `.mcp.json` is committed, and that your token is **not** in any commi
 - The server stays **pending**: approve it in the session, or run `claude mcp reset-project-choices` and start again.
 - `npx` hangs on Windows: run `npx -y @playwright/mcp@latest --help` once in a terminal to finish the download.
 - Port 8000 or 5173 is busy in `npm run e2e`: stop the running servers, or keep both running so Playwright reuses them.
-- Compare with the reference branch `m11-mcp-connect`.
+- Compare with the trainer's branch: `git diff my-m11 origin/m11-mcp-connect --stat`, and open any file with `git show origin/m11-mcp-connect:<path>`.
