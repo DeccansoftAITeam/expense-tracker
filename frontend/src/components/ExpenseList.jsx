@@ -1,6 +1,6 @@
 import { formatRupees } from '../money.js'
 
-function ExpenseList({ expenses }) {
+function ExpenseList({ expenses, onArchive }) {
   if (expenses.length === 0) {
     return <p className="empty">No expenses yet</p>
   }
@@ -12,15 +12,21 @@ function ExpenseList({ expenses }) {
           <th>Description</th>
           <th>Category</th>
           <th className="amount">Amount</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         {expenses.map((expense) => (
-          <tr key={expense.id}>
+          <tr key={expense.id} className={expense.archived ? 'archived' : ''}>
             <td>{expense.spent_on}</td>
             <td>{expense.description}</td>
             <td>{expense.category}</td>
             <td className="amount">{formatRupees(expense.amount_paise)}</td>
+            <td>
+              <button type="button" onClick={() => onArchive(expense.id, !expense.archived)}>
+                {expense.archived ? 'Restore' : 'Archive'}
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>

@@ -1,10 +1,11 @@
 import logging
 from datetime import datetime, timezone
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.models import Expense, ExpenseCreate
+from app import db
+from app.models import Expense, ExpenseCreate, ExpenseUpdate
 
 logger = logging.getLogger("expenses")
 
@@ -16,9 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In memory for now; SQLite arrives in M03.
-_expenses: list[Expense] = []
-
 
 @app.get("/health")
 def health_check() -> dict:
@@ -26,21 +24,29 @@ def health_check() -> dict:
 
 
 @app.post("/expenses", status_code=201, response_model=Expense)
-def create_expense(data: ExpenseCreate) -> Expense:
+def create_expense(data: ExpenseCreate) -> dict:
     now = datetime.now(timezone.utc)
-    expense = Expense(
-        id=len(_expenses) + 1,
+    expense = db.insert_expense(
         description=data.description,
         amount_paise=data.amount_paise,
-        spent_on=data.spent_on or now.date(),
+        spent_on=(data.spent_on or now.date()).isoformat(),
         category=data.category,
         created_at=now.isoformat(),
     )
-    _expenses.append(expense)
-    logger.info("created expense %s", expense.id)  # E8: id only
+    logger.info("created expense %s", expense["id"])  # E8: id only
     return expense
 
 
 @app.get("/expenses", response_model=list[Expense])
-def list_expenses() -> list[Expense]:
-    return sorted(_expenses, key=lambda e: (e.spent_on, e.id), reverse=True)
+def list_expenses(include_archived: bool = False) -> list[dict]:
+    return db.list_expenses(include_archived=include_archived)
+
+
+@app.patch("/expenses/{expense_id}", response_model=Expense)
+def update_expense(expense_id: int, data: ExpenseUpdate) -> dict:
+    # E6: archive, never delete. There is no DELETE route.
+    expense = db.set_archived(expense_id, data.archived)
+    if expense is None:
+        raise HTTPException(status_code=404, detail="expense not found")
+    logger.info("archived=%s expense %s", data.archived, expense_id)
+    return expense
