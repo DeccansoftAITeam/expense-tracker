@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS expenses (
     amount_paise INTEGER NOT NULL,
     spent_on TEXT NOT NULL,
     category TEXT NOT NULL DEFAULT 'other',
+    payment_method TEXT NOT NULL DEFAULT 'upi',
     archived INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL
 );
@@ -25,10 +26,24 @@ CREATE TABLE IF NOT EXISTS budgets (
 """
 
 
+# Columns added after the first release. An older expenses.db gets them on connect.
+ADDED_COLUMNS = {
+    "payment_method": "TEXT NOT NULL DEFAULT 'upi'",
+}
+
+
+def _add_missing_columns(conn: sqlite3.Connection) -> None:
+    existing = {row["name"] for row in conn.execute("PRAGMA table_info(expenses)")}
+    for name, definition in ADDED_COLUMNS.items():
+        if name not in existing:
+            conn.execute(f"ALTER TABLE expenses ADD COLUMN {name} {definition}")
+
+
 def connect() -> sqlite3.Connection:
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    _add_missing_columns(conn)
     return conn
 
 
@@ -38,12 +53,19 @@ def _to_dict(row: sqlite3.Row) -> dict:
     return data
 
 
-def insert_expense(description: str, amount_paise: int, spent_on: str, category: str, created_at: str) -> dict:
+def insert_expense(
+    description: str,
+    amount_paise: int,
+    spent_on: str,
+    category: str,
+    created_at: str,
+    payment_method: str = "upi",
+) -> dict:
     with closing(connect()) as conn, conn:
         cursor = conn.execute(
-            "INSERT INTO expenses (description, amount_paise, spent_on, category, created_at)"
-            " VALUES (?, ?, ?, ?, ?)",
-            (description, amount_paise, spent_on, category, created_at),
+            "INSERT INTO expenses (description, amount_paise, spent_on, category, payment_method, created_at)"
+            " VALUES (?, ?, ?, ?, ?, ?)",
+            (description, amount_paise, spent_on, category, payment_method, created_at),
         )
         row = conn.execute("SELECT * FROM expenses WHERE id = ?", (cursor.lastrowid,)).fetchone()
     return _to_dict(row)

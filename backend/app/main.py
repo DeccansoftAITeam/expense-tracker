@@ -40,6 +40,7 @@ def create_expense(data: ExpenseCreate) -> dict:
         amount_paise=data.amount_paise,
         spent_on=(data.spent_on or now.date()).isoformat(),
         category=data.category,
+        payment_method=data.payment_method,
         created_at=now.isoformat(),
     )
     logger.info("created expense %s", expense["id"])  # E8: id only

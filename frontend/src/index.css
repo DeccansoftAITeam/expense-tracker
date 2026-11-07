@@ -93,3 +93,11 @@ h1 {
 .total td {
   font-weight: 600;
 }
+
+.amount-badge.large {
+  background: #fff4e5;
+  color: #b54708;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-weight: 600;
+}

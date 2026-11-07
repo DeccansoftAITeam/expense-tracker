@@ -4,6 +4,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, field_validator
 
 Category = Literal["food", "transport", "bills", "shopping", "health", "other"]
+PaymentMethod = Literal["cash", "card", "upi", "netbanking"]
 
 MAX_AMOUNT_PAISE = 10_000_000  # ₹1,00,000 (E4)
 MAX_DESCRIPTION = 120  # E3
@@ -15,6 +16,7 @@ class ExpenseCreate(BaseModel):
     amount_paise: int = Field(ge=1, le=MAX_AMOUNT_PAISE, strict=True)
     spent_on: date | None = None
     category: Category = "other"
+    payment_method: PaymentMethod = "upi"
 
     @field_validator("description")
     @classmethod
@@ -31,6 +33,7 @@ class Expense(BaseModel):
     amount_paise: int
     spent_on: date
     category: Category
+    payment_method: PaymentMethod = "upi"
     archived: bool = False
     created_at: str  # UTC, ISO 8601 (E2)
 

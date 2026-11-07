@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { toPaise } from '../money.js'
 
 export const CATEGORIES = ['food', 'transport', 'bills', 'shopping', 'health', 'other']
+export const PAYMENT_METHODS = ['upi', 'cash', 'card', 'netbanking']
 
 function today() {
   return new Date().toISOString().slice(0, 10)
@@ -12,6 +13,7 @@ function ExpenseForm({ onAdd }) {
   const [amount, setAmount] = useState('')
   const [spentOn, setSpentOn] = useState(today())
   const [category, setCategory] = useState('other')
+  const [paymentMethod, setPaymentMethod] = useState('upi')
   const [error, setError] = useState('')
 
   async function handleSubmit(event) {
@@ -22,7 +24,7 @@ function ExpenseForm({ onAdd }) {
       return
     }
     try {
-      await onAdd({ description, amount_paise: amountPaise, spent_on: spentOn, category })
+      await onAdd({ description, amount_paise: amountPaise, spent_on: spentOn, category, payment_method: paymentMethod })
       setDescription('')
       setAmount('')
       setError('')
@@ -51,6 +53,13 @@ function ExpenseForm({ onAdd }) {
         {CATEGORIES.map((c) => (
           <option key={c} value={c}>
             {c}
+          </option>
+        ))}
+      </select>
+      <select aria-label="Payment method" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+        {PAYMENT_METHODS.map((m) => (
+          <option key={m} value={m}>
+            {m}
           </option>
         ))}
       </select>

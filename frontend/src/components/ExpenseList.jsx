@@ -1,4 +1,4 @@
-import { formatRupees } from '../money.js'
+import AmountBadge from './AmountBadge.jsx'
 
 function ExpenseList({ expenses, onArchive }) {
   if (expenses.length === 0) {
@@ -11,6 +11,7 @@ function ExpenseList({ expenses, onArchive }) {
           <th>Date</th>
           <th>Description</th>
           <th>Category</th>
+          <th>Paid by</th>
           <th className="amount">Amount</th>
           <th></th>
         </tr>
@@ -21,7 +22,10 @@ function ExpenseList({ expenses, onArchive }) {
             <td>{expense.spent_on}</td>
             <td>{expense.description}</td>
             <td>{expense.category}</td>
-            <td className="amount">{formatRupees(expense.amount_paise)}</td>
+            <td>{expense.payment_method}</td>
+            <td className="amount">
+              <AmountBadge paise={expense.amount_paise} />
+            </td>
             <td>
               <button type="button" onClick={() => onArchive(expense.id, !expense.archived)}>
                 {expense.archived ? 'Restore' : 'Archive'}
