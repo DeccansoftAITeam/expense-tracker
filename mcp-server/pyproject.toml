@@ -1,0 +1,16 @@
+[project]
+name = "expense-mcp-server"
+version = "0.1.0"
+description = "MCP server for the Expense Tracker API"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=2.0.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

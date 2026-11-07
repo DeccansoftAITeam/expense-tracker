@@ -4,3 +4,4 @@
 - Build the frontend with: cd frontend && npm run build
 - Run frontend tests with: cd frontend && npm test
 - Run browser (e2e) tests with: cd frontend && npm run e2e
+- Run MCP server tests with: cd mcp-server && uv run pytest -q
