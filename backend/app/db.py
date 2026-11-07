@@ -1,11 +1,13 @@
 """SQLite access. All database code lives here (see .claude/rules/backend.md)."""
 
+import os
 import sqlite3
 from contextlib import closing
 from pathlib import Path
 
-# The app uses backend/expenses.db. Tests point DB_PATH at a temporary file.
-DB_PATH = Path(__file__).resolve().parent.parent / "expenses.db"
+# The app uses backend/expenses.db, or the file in EXPENSES_DB (the e2e tests use their own).
+# pytest points DB_PATH at a temporary file.
+DB_PATH = Path(os.environ.get("EXPENSES_DB") or Path(__file__).resolve().parent.parent / "expenses.db")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS expenses (
