@@ -38,3 +38,26 @@ def summarize_month(expenses: Iterable[dict], month: str) -> dict:
         if first <= spent_on <= last:
             by_category[expense["category"]] += expense["amount_paise"]
     return {"month": month, "total_paise": sum(by_category.values()), "by_category": by_category}
+
+
+def is_over_budget(spent_paise: int, limit_paise: int | None) -> bool:
+    """Over means more than the limit. Equal is not over. No limit is never over."""
+    if limit_paise is None:
+        return False
+    return spent_paise > limit_paise
+
+
+def budget_status(summary: dict, budgets: Iterable[dict]) -> list[dict]:
+    """Spent and over for each budget, using a month summary from summarize_month."""
+    result = []
+    for budget in budgets:
+        spent = summary["by_category"].get(budget["category"], 0)
+        result.append(
+            {
+                "category": budget["category"],
+                "limit_paise": budget["limit_paise"],
+                "spent_paise": spent,
+                "over": is_over_budget(spent, budget["limit_paise"]),
+            }
+        )
+    return result

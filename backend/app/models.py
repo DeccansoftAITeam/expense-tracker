@@ -43,3 +43,19 @@ class MonthlySummary(BaseModel):
     month: str
     total_paise: int
     by_category: dict[str, int]
+
+
+class BudgetIn(BaseModel):
+    limit_paise: int = Field(ge=1, le=MAX_AMOUNT_PAISE, strict=True)
+
+
+class Budget(BaseModel):
+    category: Category
+    limit_paise: int
+
+
+class BudgetStatus(BaseModel):
+    category: Category
+    limit_paise: int
+    spent_paise: int
+    over: bool

@@ -17,6 +17,11 @@ CREATE TABLE IF NOT EXISTS expenses (
     archived INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS budgets (
+    category TEXT PRIMARY KEY,
+    limit_paise INTEGER NOT NULL
+);
 """
 
 
@@ -79,3 +84,19 @@ def expenses_between(first: str, last: str) -> list[dict]:
             "SELECT * FROM expenses WHERE spent_on BETWEEN ? AND ? ORDER BY spent_on", (first, last)
         ).fetchall()
     return [_to_dict(r) for r in rows]
+
+
+def set_budget(category: str, limit_paise: int) -> dict:
+    with closing(connect()) as conn, conn:
+        conn.execute(
+            "INSERT INTO budgets (category, limit_paise) VALUES (?, ?)"
+            " ON CONFLICT(category) DO UPDATE SET limit_paise = excluded.limit_paise",
+            (category, limit_paise),
+        )
+    return {"category": category, "limit_paise": limit_paise}
+
+
+def list_budgets() -> list[dict]:
+    with closing(connect()) as conn:
+        rows = conn.execute("SELECT * FROM budgets ORDER BY category").fetchall()
+    return [dict(r) for r in rows]
