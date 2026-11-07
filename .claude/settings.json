@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv run pytest *)",
+      "Bash(uv run ruff *)",
+      "Bash(npm run build)",
+      "Bash(npm test)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(npm install *)",
+      "Bash(uv add *)"
+    ],
+    "deny": [
+      "Read(./backend/.env)",
+      "Read(./backend/.env.*)",
+      "Read(./backend/expenses.db)",
+      "Bash(git push --force*)",
+      "Bash(git push origin main*)",
+      "Bash(curl *)",
+      "Bash(wget *)"
+    ]
+  }
+}
