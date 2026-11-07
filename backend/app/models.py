@@ -37,3 +37,9 @@ class Expense(BaseModel):
 
 class ExpenseUpdate(BaseModel):
     archived: bool
+
+
+class MonthlySummary(BaseModel):
+    month: str
+    total_paise: int
+    by_category: dict[str, int]

@@ -1,11 +1,11 @@
 import logging
 from datetime import datetime, timezone
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-from app import db
-from app.models import Expense, ExpenseCreate, ExpenseUpdate
+from app import db, rules
+from app.models import Category, Expense, ExpenseCreate, ExpenseUpdate, MonthlySummary
 
 logger = logging.getLogger("expenses")
 
@@ -38,8 +38,23 @@ def create_expense(data: ExpenseCreate) -> dict:
 
 
 @app.get("/expenses", response_model=list[Expense])
-def list_expenses(include_archived: bool = False) -> list[dict]:
-    return db.list_expenses(include_archived=include_archived)
+def list_expenses(include_archived: bool = False, category: Category | None = None) -> list[dict]:
+    return db.list_expenses(include_archived=include_archived, category=category)
+
+
+def _utc_today():
+    return datetime.now(timezone.utc).date()
+
+
+@app.get("/expenses/summary", response_model=MonthlySummary)
+def monthly_summary(month: str | None = Query(default=None, description="YYYY-MM; default this month (UTC)")) -> dict:
+    month = month or rules.month_of(_utc_today())
+    try:
+        first, last = rules.month_range(month)
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    expenses = db.expenses_between(first.isoformat(), last.isoformat())
+    return rules.summarize_month(expenses, month)
 
 
 @app.patch("/expenses/{expense_id}", response_model=Expense)

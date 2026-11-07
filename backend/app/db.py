@@ -50,13 +50,19 @@ def get_expense(expense_id: int) -> dict | None:
     return _to_dict(row) if row else None
 
 
-def list_expenses(include_archived: bool = False) -> list[dict]:
-    sql = "SELECT * FROM expenses"
+def list_expenses(include_archived: bool = False, category: str | None = None) -> list[dict]:
+    where, params = [], []
     if not include_archived:
-        sql += " WHERE archived = 0"
+        where.append("archived = 0")
+    if category:
+        where.append("category = ?")
+        params.append(category)
+    sql = "SELECT * FROM expenses"
+    if where:
+        sql += " WHERE " + " AND ".join(where)
     sql += " ORDER BY spent_on DESC, id DESC"
     with closing(connect()) as conn:
-        rows = conn.execute(sql).fetchall()
+        rows = conn.execute(sql, params).fetchall()
     return [_to_dict(r) for r in rows]
 
 
@@ -64,3 +70,12 @@ def set_archived(expense_id: int, archived: bool) -> dict | None:
     with closing(connect()) as conn, conn:
         conn.execute("UPDATE expenses SET archived = ? WHERE id = ?", (int(archived), expense_id))
     return get_expense(expense_id)
+
+
+def expenses_between(first: str, last: str) -> list[dict]:
+    """All expenses, archived included, with spent_on from first to last (inclusive)."""
+    with closing(connect()) as conn:
+        rows = conn.execute(
+            "SELECT * FROM expenses WHERE spent_on BETWEEN ? AND ? ORDER BY spent_on", (first, last)
+        ).fetchall()
+    return [_to_dict(r) for r in rows]
