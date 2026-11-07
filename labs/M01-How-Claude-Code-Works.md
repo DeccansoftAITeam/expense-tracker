@@ -1,6 +1,6 @@
 # Lab M01: How Claude Code works
 
-**Time:** 55 minutes · **Branch:** `m01-how-claude-code-works` (from `m00-prompt-engineering`)
+**Your branch:** `my-m01` · **Starts from:** `origin/m00-prompt-engineering` (the trainer's finished M00)
 
 ## What you build
 
@@ -11,16 +11,18 @@ On the way you watch the **agent loop** (gather → act → verify), the **tools
 
 ## Before you start
 
+Start from the trainer's finished M00 branch, even if your own `my-m00` is not finished. Your `my-m00` branch stays as it is; you can go back to it any time with `git switch my-m00`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 Claude Code must be installed and signed in (`claude --version` works). If not, do Task 1 of Lab M02 first and come back.
 
 ```text
 cd C:\work\expense-tracker        (Windows)
 cd ~/work/expense-tracker         (macOS)
-git switch m00-prompt-engineering
-git switch -c m01-how-claude-code-works
+git fetch origin
+git switch -c my-m01 origin/m00-prompt-engineering
 ```
 
-## Task 1: Watch the agent loop (10 min)
+## Task 1: Watch the agent loop
 
 Start Claude Code in the project folder:
 
@@ -61,7 +63,7 @@ uv run uvicorn app.main:app --reload
 
 Open http://localhost:8000/health. **Expected:** `{"status":"ok"}`. Stop the server with **Ctrl+C**.
 
-## Task 2: See the tools (5 min)
+## Task 2: See the tools
 
 In the Claude session, type each prompt and look at the tool name in the transcript:
 
@@ -73,7 +75,7 @@ In the Claude session, type each prompt and look at the tool name in the transcr
 
 You may get an approval prompt. Choose **Yes** for now; permissions come in M09.
 
-## Task 3: What Claude can see (5 min)
+## Task 3: What Claude can see
 
 Exit with `/exit`. Then start Claude inside `backend/`:
 
@@ -94,7 +96,7 @@ What does ../docs/TRD.md say about the API?
 
 Ask the same question again. Now it answers from the TRD. Exit and go back to the project root (`cd ..`).
 
-## Task 4: Sessions and context (10 min)
+## Task 4: Sessions and context
 
 Sessions are independent:
 
@@ -147,7 +149,7 @@ The **files** part has grown. Now compact and look again:
 
 **Expected:** usage drops. Exit the session.
 
-## Task 5: Build the frontend in a background session (10 min)
+## Task 5: Build the frontend in a background session
 
 From the project root:
 
@@ -177,7 +179,7 @@ npm run dev
 
 Open http://localhost:5173. **Expected:** the heading **Expense Tracker**. Stop it with **Ctrl+C**.
 
-## Task 6: One-shot mode, models and effort (8 min)
+## Task 6: One-shot mode, models and effort
 
 One-shot (print) mode is what scripts and CI use:
 
@@ -215,7 +217,7 @@ Read docs/TRD.md and list any requirement that is unclear or contradicts the PRD
 
 **Expected:** low effort answers quickly; high effort thinks longer before answering.
 
-## Task 7: Read your usage (2 min)
+## Task 7: Read your usage
 
 ```text
 /usage
@@ -228,9 +230,14 @@ Press **d** and **w** to switch between the last day and the last week. Exit wit
 ```text
 git add -A
 git commit -m "M01: backend health check and frontend shell"
-git switch main
-git merge --no-ff m01-how-claude-code-works -m "Merge M01"
-git switch m01-how-claude-code-works
+```
+
+Your work stays on `my-m01`. You do not need to finish or merge it: the next lab starts from the trainer's `m01-how-claude-code-works` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m01 origin/m01-how-claude-code-works --stat
 ```
 
 ## Done when
@@ -241,11 +248,11 @@ git switch m01-how-claude-code-works
 - [ ] You saw Read, Search, Bash and Web tool calls in the transcript.
 - [ ] You used `/add-dir`, `/rename`, `claude --resume`, `/context`, `/compact`, `claude --bg`, `claude agents`, `claude -p`, `/model`, `/effort` and `/usage`.
 - [ ] `node_modules/` and `.venv/` are **not** in `git status` (the `.gitignore` from M00 covers them).
-- [ ] The work is committed and merged into `main`.
+- [ ] Your work is committed on `my-m01`.
 
 ## If you get stuck
 
 - `uv: command not found`: install uv (see `labs/README.md`) and open a new terminal.
 - `claude --bg` or `claude agents` is not recognised: run `claude update` and try again.
 - The frontend shows the Vite demo page: ask `Remove the Vite demo content. App.jsx shows only the heading Expense Tracker.`
-- Compare with the reference branch `m01-how-claude-code-works`.
+- Compare with the trainer's branch: `git diff my-m01 origin/m01-how-claude-code-works --stat`, and open any file with `git show origin/m01-how-claude-code-works:<path>`.
