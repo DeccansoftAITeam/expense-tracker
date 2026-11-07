@@ -1,6 +1,6 @@
 # Lab M07: Subagents
 
-**Time:** 55 minutes · **Branch:** `m07-subagents` (from `m06-skills`)
+**Your branch:** `my-m07` · **Starts from:** `origin/m06-skills` (the trainer's finished M06)
 
 ## What you build
 
@@ -18,14 +18,16 @@ And the feature they build: **CSV export**, `GET /expenses/export.csv` and an **
 
 ## Before you start
 
+Start from the trainer's finished M06 branch, even if your own `my-m06` is not finished. Your `my-m06` branch stays as it is; you can go back to it any time with `git switch my-m06`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m06-skills
-git switch -c m07-subagents
+git fetch origin
+git switch -c my-m07 origin/m06-skills
 ```
 
 Windows: `mkdir .claude\agents` · macOS: `mkdir -p .claude/agents`
 
-## Task 1: A read-only reviewer (8 min)
+## Task 1: A read-only reviewer
 
 Create `.claude/agents/expense-reviewer.md`:
 
@@ -67,7 +69,7 @@ Use the expense-reviewer subagent to review my branch.
 
 Read the **VERDICT** line.
 
-## Task 2: A cheap searcher, and what a subagent sees (8 min)
+## Task 2: A cheap searcher, and what a subagent sees
 
 ```text
 Create a subagent in .claude/agents/finder.md that finds where something is defined or used.
@@ -99,7 +101,7 @@ For the CSV export, amounts must be rupee text with 2 decimals, like 250.50.
 - The CSV export uses dates in YYYY-MM-DD and amounts as rupee text with 2 decimals (see docs/csv-export.md).
 ```
 
-## Task 3: The built-in Explore agent and a fork (8 min)
+## Task 3: The built-in Explore agent and a fork
 
 ```text
 Use the Explore subagent to map how an expense moves from POST /expenses to the database in backend/. Be very thorough.
@@ -125,7 +127,7 @@ Then start a fork that inherits the conversation:
 
 Keep working. When it finishes, open `docs/csv-export.md`: it knew the decisions without being told again.
 
-## Task 4: Delegate the backend work to a role agent (10 min)
+## Task 4: Delegate the backend work to a role agent
 
 ```text
 Create .claude/agents/backend.md: edits only files under backend/, writes the pytest test first,
@@ -152,7 +154,7 @@ uv run uvicorn app.main:app --reload
 
 Open http://localhost:8000/expenses/export.csv. The file downloads.
 
-## Task 5: A test-runner in the background (8 min)
+## Task 5: A test-runner in the background
 
 ```text
 Create .claude/agents/test-runner.md: runs cd backend && uv run pytest -q, cd frontend && npm test
@@ -181,7 +183,7 @@ http://localhost:8000/expenses/export.csv. Put the URL in src/api.js.
 
 Type `/tasks` to see the test-runner. Read its result when the notification arrives. Click **Export CSV** at http://localhost:5173 and open the file.
 
-## Task 6: The reviewer catches a broken rule (8 min)
+## Task 6: The reviewer catches a broken rule
 
 Commit the CSV export:
 
@@ -207,9 +209,14 @@ logger.info("exported %s", e["description"])
 ```text
 git add -A
 git commit -m "M07: subagents and CSV export"
-git switch main
-git merge --no-ff m07-subagents -m "Merge M07"
-git switch m07-subagents
+```
+
+Your work stays on `my-m07`. You do not need to finish or merge it: the next lab starts from the trainer's `m07-subagents` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m07 origin/m07-subagents --stat
 ```
 
 ## Done when
@@ -225,4 +232,4 @@ git switch m07-subagents
 
 - The agent is not listed: the file must be in `.claude/agents/` and start with `---` frontmatter. Start a new session.
 - The backend agent edits `frontend/`: tighten its body with `Edit only files under backend/. If the task needs a frontend change, stop and say so.`
-- Compare with the reference branch `m07-subagents`.
+- Compare with the trainer's branch: `git diff my-m07 origin/m07-subagents --stat`, and open any file with `git show origin/m07-subagents:<path>`.
