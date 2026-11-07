@@ -1,0 +1,1 @@
+- Each test name says the rule it checks, for example test_description_longer_than_120_is_rejected.

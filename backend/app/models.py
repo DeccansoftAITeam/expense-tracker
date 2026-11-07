@@ -33,3 +33,7 @@ class Expense(BaseModel):
     category: Category
     archived: bool = False
     created_at: str  # UTC, ISO 8601 (E2)
+
+
+class ExpenseUpdate(BaseModel):
+    archived: bool

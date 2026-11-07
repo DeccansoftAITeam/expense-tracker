@@ -1,13 +1,4 @@
 import pytest
-from fastapi.testclient import TestClient
-
-from app import main
-
-
-@pytest.fixture
-def client():
-    main._expenses.clear()
-    return TestClient(main.app)
 
 
 def test_create_expense_returns_201_with_id(client):
@@ -70,3 +61,11 @@ def test_list_is_newest_date_first(client):
     client.post("/expenses", json={"description": "New", "amount_paise": 100, "spent_on": "2026-11-03"})
     descriptions = [e["description"] for e in client.get("/expenses").json()]
     assert descriptions == ["New", "Old"]
+
+
+def test_log_line_has_the_id_not_the_description(client, caplog):
+    caplog.set_level("INFO", logger="expenses")
+    client.post("/expenses", json={"description": "Birthday gift for Asha", "amount_paise": 99900})
+    assert "Birthday gift" not in caplog.text
+    assert "99900" not in caplog.text
+    assert "created expense 1" in caplog.text

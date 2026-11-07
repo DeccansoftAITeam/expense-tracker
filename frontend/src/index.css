@@ -61,3 +61,20 @@ h1 {
 .empty {
   color: #616e7c;
 }
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.archived td {
+  color: #9aa5b1;
+  text-decoration: line-through;
+}
+
+.archived td:last-child {
+  text-decoration: none;
+}

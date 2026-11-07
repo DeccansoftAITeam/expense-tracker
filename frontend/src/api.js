@@ -12,10 +12,17 @@ async function request(path, options = {}) {
   return response.json()
 }
 
-export function listExpenses() {
-  return request('/expenses')
+export function listExpenses({ includeArchived = false } = {}) {
+  const params = new URLSearchParams()
+  if (includeArchived) params.set('include_archived', 'true')
+  const query = params.toString()
+  return request(`/expenses${query ? `?${query}` : ''}`)
 }
 
 export function createExpense(expense) {
   return request('/expenses', { method: 'POST', body: JSON.stringify(expense) })
+}
+
+export function setArchived(id, archived) {
+  return request(`/expenses/${id}`, { method: 'PATCH', body: JSON.stringify({ archived }) })
 }
