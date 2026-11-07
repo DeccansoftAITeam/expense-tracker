@@ -1,6 +1,6 @@
 # Lab M05: Git, GitHub, worktrees and review
 
-**Time:** 60 minutes · **Branch:** `m05-git-worktrees-review` (from `m04-plan-implement-verify`)
+**Your branch:** `my-m05` · **Starts from:** `origin/m04-plan-implement-verify` (the trainer's finished M04)
 
 ## What you build
 
@@ -12,9 +12,11 @@
 
 ## Before you start
 
+Start from the trainer's finished M04 branch, even if your own `my-m04` is not finished. Your `my-m04` branch stays as it is; you can go back to it any time with `git switch my-m04`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m04-plan-implement-verify
-git switch -c m05-git-worktrees-review
+git fetch origin
+git switch -c my-m05 origin/m04-plan-implement-verify
 git --version
 gh --version
 gh auth status
@@ -22,7 +24,7 @@ gh auth status
 
 If `gh auth status` says you are not logged in: `gh auth login`, choose **GitHub.com** and **HTTPS**, and log in through the browser.
 
-## Task 1: Check .gitignore and push to GitHub (8 min)
+## Task 1: Check .gitignore and push to GitHub
 
 ```text
 claude
@@ -47,14 +49,17 @@ Show me git diff --staged after staging .gitignore. Then commit it with a one-li
 imperative mood, under 60 characters, that says what changed and why.
 ```
 
+Your `origin` is the course repository, which you only read from. Your own work goes to your own GitHub repository, added as a second remote named `mine`:
+
 ```text
-Create a private GitHub repository named expense-tracker with gh, add it as origin,
-and push main and this branch. Then show me the remote URL with git remote -v.
+Create a private GitHub repository named expense-tracker with gh. Add it as a remote named mine
+(keep origin as it is) and push my-m05 to it. Then make it the default repo for gh with
+gh repo set-default, and show me git remote -v.
 ```
 
-Approve the `gh repo create` and `git push` commands. Open the URL: the code is there, `.env` and `expenses.db` are not.
+Approve the `gh repo create`, `git push` and `gh repo set-default` commands. Open the URL: the code is there, `.env` and `expenses.db` are not.
 
-## Task 2: Teach the reviewer your rules (5 min)
+## Task 2: Teach the reviewer your rules
 
 ```text
 Add a "Review rules" section to CLAUDE.md with these lines, then commit it:
@@ -67,9 +72,9 @@ Add a "Review rules" section to CLAUDE.md with these lines, then commit it:
 - Every new endpoint has a test in backend/tests/.
 ```
 
-Push the branch: `git push`.
+Push the branch: `git push mine my-m05`.
 
-## Task 3: Two features in two worktrees (15 min)
+## Task 3: Two features in two worktrees
 
 Make the `.env` file follow you into new worktrees: create `.worktreeinclude` in the project root with one line:
 
@@ -119,7 +124,8 @@ git worktree list
 In **each** session:
 
 ```text
-Commit the work, push this branch and open a pull request against m05-git-worktrees-review with gh.
+Commit the work, push this branch to the remote mine, and open a pull request with gh on my
+repository expense-tracker against my-m05.
 Title: one line. Body: what changed, why, how to test, and anything you were unsure about. Do not merge it.
 ```
 
@@ -129,7 +135,7 @@ Type `/exit` in the budgets session and choose **keep**. Run `git worktree list`
 claude --worktree budgets --resume
 ```
 
-## Task 4: /code-review on the budgets PR (10 min)
+## Task 4: /code-review on the budgets PR
 
 In the budgets session:
 
@@ -154,17 +160,17 @@ Run `git diff HEAD~1` to see exactly what changed. On GitHub, approve and **merg
 Now update the search branch. In the search session (`claude --worktree search --resume`):
 
 ```text
-The base branch has moved. Rebase this branch on origin/m05-git-worktrees-review, run npm run build,
+The base branch has moved. Fetch mine and rebase this branch on mine/my-m05, run npm run build,
 and tell me if anything conflicted. Then push the updated branch.
 ```
 
 Merge the search PR on GitHub. Then, in your main folder:
 
 ```text
-git pull
+git pull mine my-m05
 ```
 
-## Task 5: /security-review catches personal data in logs (8 min)
+## Task 5: /security-review catches personal data in logs
 
 ```text
 git switch -c log-test
@@ -191,11 +197,11 @@ Fix it by logging the expense id only (rule E8).
 Run `/security-review` again: no finding. Switch back and remove the test branch:
 
 ```text
-git switch m05-git-worktrees-review
+git switch my-m05
 git branch -D log-test
 ```
 
-## Task 6: Watch the reviewer use your rules (5 min)
+## Task 6: Watch the reviewer use your rules
 
 Break a rule on purpose. In `backend/app/rules.py`, make `is_over_budget` read the clock, for example add `from datetime import datetime` and `datetime.now()` inside it.
 
@@ -212,15 +218,21 @@ git restore backend/app/rules.py
 ## Finish
 
 ```text
-git switch main
-git merge --no-ff m05-git-worktrees-review -m "Merge M05"
-git push origin main
-git switch m05-git-worktrees-review
+git add -A
+git commit -m "M05: budgets, search and review"
+```
+
+Your work stays on `my-m05`. You do not need to finish or merge it: the next lab starts from the trainer's `m05-git-worktrees-review` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m05 origin/m05-git-worktrees-review --stat
 ```
 
 ## Done when
 
-- [ ] The private GitHub repo `expense-tracker` has `main` and `m05-git-worktrees-review`; no `.env` or `expenses.db`.
+- [ ] Your private GitHub repo `expense-tracker` (remote `mine`) has `my-m05`; no `.env` or `expenses.db`.
 - [ ] Two PRs (budgets, search) were opened from two worktrees and merged by you.
 - [ ] `uv run pytest -q` covers: equal to the limit is not over, one paisa more is over, archived does not count.
 - [ ] Typing "lun" in the search box shows only "Lunch".
@@ -232,4 +244,4 @@ git switch m05-git-worktrees-review
 - `claude --worktree` starts without `backend/.env`: check `.worktreeinclude` is in the main folder and committed.
 - The rebase conflicts in `App.jsx`: ask `Resolve the conflict keeping both the search box and the existing filters.`
 - No GitHub access in class? Do Tasks 3–6 locally: merge with `git merge --no-ff budgets` and `git merge --no-ff search`, and use `/code-review` without a PR number.
-- Compare with the reference branch `m05-git-worktrees-review`.
+- Compare with the trainer's branch: `git diff my-m05 origin/m05-git-worktrees-review --stat`, and open any file with `git show origin/m05-git-worktrees-review:<path>`.
