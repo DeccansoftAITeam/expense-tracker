@@ -28,6 +28,7 @@ Backend dependencies: @backend/pyproject.toml.
 - All database code lives in `backend/app/db.py`; the database file is `backend/expenses.db`.
 - Tests never use `backend/expenses.db`; they use a temporary SQLite file (pytest `tmp_path`).
 - Frontend is JavaScript (`.jsx`), never TypeScript.
+- `mcp-server/server.py` is a stdio MCP server: never print to stdout; log to stderr. It calls the backend API, never the database.
 - The CSV export uses dates in YYYY-MM-DD and amounts as rupee text with 2 decimals (see docs/csv-export.md).
 
 ## Review rules
