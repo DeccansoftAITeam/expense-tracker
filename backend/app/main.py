@@ -5,7 +5,16 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import db, rules
-from app.models import Category, Expense, ExpenseCreate, ExpenseUpdate, MonthlySummary
+from app.models import (
+    Budget,
+    BudgetIn,
+    BudgetStatus,
+    Category,
+    Expense,
+    ExpenseCreate,
+    ExpenseUpdate,
+    MonthlySummary,
+)
 
 logger = logging.getLogger("expenses")
 
@@ -46,8 +55,7 @@ def _utc_today():
     return datetime.now(timezone.utc).date()
 
 
-@app.get("/expenses/summary", response_model=MonthlySummary)
-def monthly_summary(month: str | None = Query(default=None, description="YYYY-MM; default this month (UTC)")) -> dict:
+def _summary_for(month: str | None) -> dict:
     month = month or rules.month_of(_utc_today())
     try:
         first, last = rules.month_range(month)
@@ -55,6 +63,21 @@ def monthly_summary(month: str | None = Query(default=None, description="YYYY-MM
         raise HTTPException(status_code=422, detail=str(error)) from error
     expenses = db.expenses_between(first.isoformat(), last.isoformat())
     return rules.summarize_month(expenses, month)
+
+
+@app.get("/expenses/summary", response_model=MonthlySummary)
+def monthly_summary(month: str | None = Query(default=None, description="YYYY-MM; default this month (UTC)")) -> dict:
+    return _summary_for(month)
+
+
+@app.put("/budgets/{category}", response_model=Budget)
+def set_budget(category: Category, data: BudgetIn) -> dict:
+    return db.set_budget(category, data.limit_paise)
+
+
+@app.get("/budgets", response_model=list[BudgetStatus])
+def list_budgets(month: str | None = Query(default=None, description="YYYY-MM; default this month (UTC)")) -> list[dict]:
+    return rules.budget_status(_summary_for(month), db.list_budgets())
 
 
 @app.patch("/expenses/{expense_id}", response_model=Expense)
