@@ -1,6 +1,6 @@
 # Lab M04: Plan, implement, verify
 
-**Time:** 60 minutes · **Branch:** `m04-plan-implement-verify` (from `m03-context-memory`)
+**Your branch:** `my-m04` · **Starts from:** `origin/m03-context-memory` (the trainer's finished M03)
 
 ## What you build
 
@@ -12,17 +12,19 @@ You practise **plan mode**, editing a plan, **tests first**, a **self-healing lo
 
 ## Before you start
 
+Start from the trainer's finished M03 branch, even if your own `my-m03` is not finished. Your `my-m03` branch stays as it is; you can go back to it any time with `git switch my-m03`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m03-context-memory
-git switch -c m04-plan-implement-verify
+git fetch origin
+git switch -c my-m04 origin/m03-context-memory
 ```
 
-Each task below gets its own short branch, merged back into `m04-plan-implement-verify`.
+Each feature below gets its own short task branch, made from `my-m04` and merged back into `my-m04`.
 
-## Task 1: Plan the monthly summary (8 min)
+## Task 1: Plan the monthly summary
 
 ```text
-git switch -c add-monthly-summary
+git switch -c my-m04-summary
 claude
 ```
 
@@ -48,7 +50,7 @@ When the plan appears, press **Ctrl+G**. The plan opens in your editor. Add thes
 
 Choose **No, keep planning** so Claude updates the plan, then read it again. Do not approve yet: Task 2 uses the plan with a tests-first prompt.
 
-## Task 2: Tests first (12 min)
+## Task 2: Tests first
 
 Approve the plan with **Yes, manually approve edits**, then type:
 
@@ -84,7 +86,7 @@ git log --oneline -2
 
 **Expected:** all tests pass, and two small commits: the tests, then the code.
 
-## Task 3: A self-healing loop, then /goal (10 min)
+## Task 3: A self-healing loop, then /goal
 
 Break the rule by hand. In `backend/app/rules.py`, inside `summarize_month`, change:
 
@@ -115,7 +117,7 @@ Now a loop with a judge. Break two things: the same `<` change, and in `backend/
 
 Watch the **/goal active** indicator and the verdict after each turn. When it says the goal is met, type `/goal` to see the turns and tokens it used. Switch back to **Manual**.
 
-## Task 4: Checkpoints and /rewind (5 min)
+## Task 4: Checkpoints and /rewind
 
 ```text
 Move month_range into a new file backend/app/dates.py and update all callers.
@@ -131,7 +133,7 @@ Create a file backend/notes.txt using a shell command, and add a docstring to su
 
 Run `/rewind` and restore code to before that prompt. **Expected:** the docstring is gone, but `backend/notes.txt` is **still there**, because a shell command created it. Delete it yourself.
 
-## Task 5: Show the summary in the UI, then merge the task branch (5 min)
+## Task 5: Show the summary in the UI, then merge the task branch
 
 ```text
 Add frontend/src/components/MonthlySummary.jsx: a month picker (default this month)
@@ -151,14 +153,14 @@ Write a one-line commit message for these changes and commit them.
 ```
 
 ```text
-git switch m04-plan-implement-verify
-git merge --no-ff add-monthly-summary -m "Merge add-monthly-summary"
+git switch my-m04
+git merge --no-ff my-m04-summary -m "Merge my-m04-summary"
 ```
 
-## Task 6: A planned task — the category filter (12 min)
+## Task 6: A planned task — the category filter
 
 ```text
-git switch -c add-category-filter
+git switch -c my-m04-filter
 claude --permission-mode plan
 ```
 
@@ -183,16 +185,23 @@ uv run pytest -q
 Open http://localhost:5173 and pick **food** in the dropdown: only food expenses show. Commit, then merge:
 
 ```text
-git switch m04-plan-implement-verify
-git merge --no-ff add-category-filter -m "Merge add-category-filter"
+git switch my-m04
+git merge --no-ff my-m04-filter -m "Merge my-m04-filter"
 ```
 
 ## Finish
 
 ```text
-git switch main
-git merge --no-ff m04-plan-implement-verify -m "Merge M04"
-git switch m04-plan-implement-verify
+git add -A
+git commit -m "M04: monthly summary and category filter"
+```
+
+Your work stays on `my-m04`. You do not need to finish or merge it: the next lab starts from the trainer's `m04-plan-implement-verify` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m04 origin/m04-plan-implement-verify --stat
 ```
 
 ## Done when
@@ -203,10 +212,10 @@ git switch m04-plan-implement-verify
 - [ ] `GET /expenses/summary?month=2026-11` and `GET /expenses?category=food` work; `category=travel` gives 422.
 - [ ] The UI shows the CategoryFilter and the MonthlySummary panel.
 - [ ] You used `/plan`, **Ctrl+G**, a loop with a stop condition, `/goal`, `/rewind` and `/effort`.
-- [ ] Both task branches are merged into `m04-plan-implement-verify`, and that branch is merged into `main`.
+- [ ] Both task branches (`my-m04-summary`, `my-m04-filter`) are merged into `my-m04`.
 
 ## If you get stuck
 
 - Claude changes a test to make it pass: reply `You changed a test. Restore it and fix the code instead.`
 - The summary counts 1 December: the end check must be `<= last`, where `last` is the last day of the month.
-- Compare with the reference branch `m04-plan-implement-verify`.
+- Compare with the trainer's branch: `git diff my-m04 origin/m04-plan-implement-verify --stat`, and open any file with `git show origin/m04-plan-implement-verify:<path>`.

@@ -1,6 +1,6 @@
 # Lab M12: Build an MCP server
 
-**Time:** 60 minutes · **Branch:** `m12-mcp-build` (from `m11-mcp-connect`)
+**Your branch:** `my-m12` · **Starts from:** `origin/m11-mcp-connect` (the trainer's finished M11)
 
 ## What you build
 
@@ -23,9 +23,11 @@ The server calls the backend over HTTP, so the rules E1–E8 stay in one place: 
 
 ## Before you start
 
+Start from the trainer's finished M11 branch, even if your own `my-m11` is not finished. Your `my-m11` branch stays as it is; you can go back to it any time with `git switch my-m11`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m11-mcp-connect
-git switch -c m12-mcp-build
+git fetch origin
+git switch -c my-m12 origin/m11-mcp-connect
 python --version        (macOS: python3 --version)   3.10 or newer
 uv --version
 node --version          22.19 or newer, for the Inspector
@@ -48,7 +50,7 @@ print("hi", file=sys.stderr)     # right
 logging.info("hi")               # right, when logging goes to stderr
 ```
 
-## Task 1: Scaffold the project (5 min)
+## Task 1: Scaffold the project
 
 From the project root:
 
@@ -68,7 +70,7 @@ Create a uv project in mcp-server/ named expense-mcp-server, Python 3.12+, with 
 pythonpath ".". Do not write any code yet.
 ```
 
-## Task 2: Write the server, one part at a time (15 min)
+## Task 2: Write the server, one part at a time
 
 Ask Claude for each part, and read the code before you accept it.
 
@@ -114,7 +116,7 @@ uv run server.py
 
 **Expected:** it "hangs": it is waiting for JSON-RPC on stdin. That is correct. Stop it with **Ctrl+C**.
 
-## Task 3: The Inspector — CLI, then UI (10 min)
+## Task 3: The Inspector — CLI, then UI
 
 List the tools:
 
@@ -151,7 +153,7 @@ Open the URL it prints. Set **Protocol Era = Auto** in Server Settings and click
 
 Stop it with **Ctrl+C**.
 
-## Task 4: Use it from Claude Code (8 min)
+## Task 4: Use it from Claude Code
 
 Go back to the project root and register it for the team (project scope):
 
@@ -181,7 +183,7 @@ I spent 180 rupees on an auto today and 2,450.50 on groceries. Add both.
 
 (Use this month.) **Expected:** a table from `monthly_summary` and `budget_status`, with no prompts. Check the new expenses at http://localhost:5173.
 
-## Task 5: Use it from Claude Desktop (5 min)
+## Task 5: Use it from Claude Desktop
 
 ```text
 cd mcp-server
@@ -206,7 +208,7 @@ Or add it by hand to `claude_desktop_config.json` (Settings → Developer → Ed
 
 Fully quit and restart Claude Desktop. Ask: `What did I spend on food this month?`
 
-## Task 6: Your own client, and tests (12 min)
+## Task 6: Your own client, and tests
 
 ```text
 Create mcp-server/stdio_client.py: launch server.py over stdio with
@@ -245,12 +247,15 @@ In `server.py`, swap the last line for `mcp.run(transport="streamable-http", por
 ```text
 git add -A
 git commit -m "M12: expenses MCP server with tools, resources, prompt and tests"
-git switch main
-git merge --no-ff m12-mcp-build -m "Merge M12"
-git switch m12-mcp-build
 ```
 
-`main` now holds the complete course app.
+Your work stays on `my-m12`. You do not need to finish or merge it: the next lab starts from the trainer's `m12-mcp-build` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m12 origin/m12-mcp-build --stat
+```
 
 ## Done when
 
@@ -266,4 +271,4 @@ git switch m12-mcp-build
 - The server connects and then dies at once: look for a `print()` without `file=sys.stderr`.
 - Every tool fails with "Connection refused": the backend is not running on port 8000.
 - `mcp dev` cannot find the server object: the variable must be named `mcp` (or pass `server.py:mcp`).
-- Compare with the reference branch `m12-mcp-build`.
+- Compare with the trainer's branch: `git diff my-m12 origin/m12-mcp-build --stat`, and open any file with `git show origin/m12-mcp-build:<path>`.
