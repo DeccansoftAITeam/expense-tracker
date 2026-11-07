@@ -1,6 +1,6 @@
 # Lab M02: Install, sign in, first session
 
-**Time:** 55 minutes · **Branch:** `m02-first-session` (from `m01-how-claude-code-works`)
+**Your branch:** `my-m02` · **Starts from:** `origin/m01-how-claude-code-works` (the trainer's finished M01)
 
 ## What you build
 
@@ -13,12 +13,14 @@ On the way you practise **install and sign-in checks**, **permission modes**, **
 
 ## Before you start
 
+Start from the trainer's finished M01 branch, even if your own `my-m01` is not finished. Your `my-m01` branch stays as it is; you can go back to it any time with `git switch my-m01`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m01-how-claude-code-works
-git switch -c m02-first-session
+git fetch origin
+git switch -c my-m02 origin/m01-how-claude-code-works
 ```
 
-## Task 1: Check the install and sign-in (5 min)
+## Task 1: Check the install and sign-in
 
 Install Claude Code if you have not (skip if `claude --version` already works):
 
@@ -55,7 +57,7 @@ claude
 
 **Expected:** the account line names your organisation and seat, not "API key".
 
-## Task 2: VS Code and the first prompt (5 min)
+## Task 2: VS Code and the first prompt
 
 1. Open the project in VS Code: `code .`
 2. Install the **Claude Code** extension from the Extensions view.
@@ -67,7 +69,7 @@ Explain how this project is organised. Do not change anything.
 
 **Expected:** it mentions `docs/PRD.md`, `docs/TRD.md`, the FastAPI backend with `GET /health`, and the React frontend.
 
-## Task 3: Permission modes (5 min)
+## Task 3: Permission modes
 
 Look at the bottom line of the session: it shows the current mode. Press **Shift+Tab** until it shows **Manual**.
 
@@ -77,7 +79,7 @@ Run uv run pytest -q in backend/.
 
 **Expected:** an approval prompt. Choose **Yes**. Press **Shift+Tab** a few times to see **Accept edits** and **Plan**, then go back to **Manual**.
 
-## Task 4: Build the API and steer while it works (12 min)
+## Task 4: Build the API and steer while it works
 
 Use `@` to point at a file. Type the path and watch the suggestions:
 
@@ -122,7 +124,7 @@ Open http://localhost:8000/docs. Use **POST /expenses** with:
 Then **GET /expenses**. **Expected:** the lunch is listed with `"category": "food"` and an id.
 Try `"amount_paise": 250.5`. **Expected:** 422 (E1).
 
-## Task 5: Build the UI and read every tool call (12 min)
+## Task 5: Build the UI and read every tool call
 
 Stay in **Manual** mode.
 
@@ -153,7 +155,7 @@ Use a selection and a screenshot as prompts:
 1. In VS Code open `frontend/src/App.jsx`, select the `<h1>` line, press **Alt+K**, and type: `Why does this heading not show the total spent?`
 2. Take a screenshot of http://localhost:5173, drag it into the prompt and ask: `What is wrong with the layout of this page?`
 
-## Task 6: Approval prompts and settings.local.json (5 min)
+## Task 6: Approval prompts and settings.local.json
 
 ```text
 Run uv run pytest -q in backend/.
@@ -167,7 +169,7 @@ Delete the backend/tests folder.
 
 Choose **No**, press **Tab**, type `don't delete anything, just list the files`, and press Enter. Claude lists the files instead.
 
-## Task 7: Commands, continue and resume (6 min)
+## Task 7: Commands, continue and resume
 
 Type `/` then `st`: the list filters to `/status`. Run `/help`, then `/doctor`.
 
@@ -198,9 +200,14 @@ claude update
 ```text
 git add -A
 git commit -m "M02: add and list expenses (in memory)"
-git switch main
-git merge --no-ff m02-first-session -m "Merge M02"
-git switch m02-first-session
+```
+
+Your work stays on `my-m02`. You do not need to finish or merge it: the next lab starts from the trainer's `m02-first-session` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m02 origin/m02-first-session --stat
 ```
 
 ## Done when
@@ -209,10 +216,10 @@ git switch m02-first-session
 - [ ] http://localhost:5173 adds and lists expenses, newest first, with rupees shown as `₹250.50`.
 - [ ] `frontend/src/money.js` converts rupees to paise without floating-point maths.
 - [ ] `.claude/settings.local.json` exists and is **not** in `git status` (it is personal).
-- [ ] The work is committed and merged into `main`.
+- [ ] Your work is committed on `my-m02`.
 
 ## If you get stuck
 
 - The browser shows a CORS error in the console: `Enable CORS in backend/app/main.py for http://localhost:5173.`
 - The list is empty after restarting the backend: that is expected. Memory is cleared on restart. SQLite comes in M03.
-- Compare with the reference branch `m02-first-session`.
+- Compare with the trainer's branch: `git diff my-m02 origin/m02-first-session --stat`, and open any file with `git show origin/m02-first-session:<path>`.

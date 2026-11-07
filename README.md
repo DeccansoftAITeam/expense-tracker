@@ -32,7 +32,7 @@ main
                                                  └─ m12-mcp-build
 ```
 
-Behind in a lab? Switch to the reference branch of the module before it and start the lab from there (see `labs/README.md`).
+Students clone this repository once. Every lab starts on a new branch of the student's own (`my-m04`), made from the trainer branch of the module before it (`origin/m03-context-memory`), so an unfinished lab never blocks the next one. A `starter` branch holds the empty project for M00. See `labs/README.md`.
 
 ## Run it
 
