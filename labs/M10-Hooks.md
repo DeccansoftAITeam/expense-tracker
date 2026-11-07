@@ -1,6 +1,6 @@
 # Lab M10: Hooks
 
-**Time:** 55 minutes · **Branch:** `m10-hooks` (from `m09-permissions`)
+**Your branch:** `my-m10` · **Starts from:** `origin/m09-permissions` (the trainer's finished M09)
 
 ## What you build
 
@@ -17,9 +17,11 @@ Hooks that turn "please always" into **always**. The scripts are Python and run 
 
 ## Before you start
 
+Start from the trainer's finished M09 branch, even if your own `my-m09` is not finished. Your `my-m09` branch stays as it is; you can go back to it any time with `git switch my-m09`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
+
 ```text
-git switch m09-permissions
-git switch -c m10-hooks
+git fetch origin
+git switch -c my-m10 origin/m09-permissions
 cd backend
 uv add --dev ruff
 cd ..
@@ -33,7 +35,7 @@ How a command hook talks to Claude Code:
 - **Exit 0**: go on. **Exit 2**: block; the **stderr** text is the reason Claude reads.
 - For `SessionStart`, whatever the script prints on **stdout** is added to Claude's context.
 
-## Task 1: Your first hook — a notification (5 min)
+## Task 1: Your first hook — a notification
 
 Open your **user** settings (Windows: `notepad $HOME\.claude\settings.json` · macOS: `nano ~/.claude/settings.json`) and add the block for your OS (merge with what is there).
 
@@ -65,7 +67,7 @@ Windows:
 
 Start `claude`, run `/hooks`: **Notification** is listed with its source file. Ask `Run npm install in frontend/` (it asks, from M09), switch away from the terminal, and see the notification.
 
-## Task 2: Protect files (10 min)
+## Task 2: Protect files
 
 Ask Claude to write the script (or type it yourself):
 
@@ -106,7 +108,7 @@ Add DEBUG=true to backend/.env.
 
 **Expected:** the edit is blocked; Claude reads the reason and tells you to change it by hand.
 
-## Task 3: Block destructive SQL — enforcing E6 (8 min)
+## Task 3: Block destructive SQL — enforcing E6
 
 ```text
 Create .claude/hooks/block_destructive_sql.py: read the event from stdin, take tool_input.command,
@@ -122,7 +124,7 @@ Clear all expenses with sqlite3 backend/expenses.db "DELETE FROM expenses"
 
 **Expected:** blocked by the hook, even though you could approve shell commands. A permission rule asks a question; a hook enforces.
 
-## Task 4: Format after every edit, and audit every command (10 min)
+## Task 4: Format after every edit, and audit every command
 
 ```text
 Create two hooks:
@@ -148,7 +150,7 @@ Run git status and git log --oneline -3.
 
 Open `.claude/bash-audit.log`: both commands are there, with timestamp and folder.
 
-## Task 5: Bring the rules back after compaction (7 min)
+## Task 5: Bring the rules back after compaction
 
 ```text
 Create .claude/hooks/rules_reminder.py that prints "Reminder after compaction. Project rules:" and then
@@ -167,7 +169,7 @@ What are the rules for logging and for deleting expenses?
 
 **Expected:** E8 and E6, from the reminder that was put back in context.
 
-## Task 6: Try to break it (5 min)
+## Task 6: Try to break it
 
 | Ask Claude | Expected |
 |---|---|
@@ -180,9 +182,14 @@ What are the rules for logging and for deleting expenses?
 ```text
 git add -A
 git commit -m "M10: hooks for protection, formatting, audit and rules"
-git switch main
-git merge --no-ff m10-hooks -m "Merge M10"
-git switch m10-hooks
+```
+
+Your work stays on `my-m10`. You do not need to finish or merge it: the next lab starts from the trainer's `m10-hooks` branch.
+
+To compare your work with the trainer's:
+
+```text
+git diff my-m10 origin/m10-hooks --stat
 ```
 
 ## Done when
@@ -199,4 +206,4 @@ git switch m10-hooks
 - The hook never fires: run `/hooks`; check the matcher spelling (`Edit|Write`, `Bash`) and that the JSON is valid (`claude doctor`).
 - `uv: command not found` inside the hook: Claude Code may not see your terminal's PATH. Use the full path to uv (`where uv` on Windows, `which uv` on macOS).
 - Every Python edit takes long: that is `uv run ruff`; it is quicker after the first run.
-- Compare with the reference branch `m10-hooks`.
+- Compare with the trainer's branch: `git diff my-m10 origin/m10-hooks --stat`, and open any file with `git show origin/m10-hooks:<path>`.
