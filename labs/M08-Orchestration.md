@@ -67,6 +67,7 @@ Use the analyst on docs/requests/recurring-expenses.md.
 Build recurring monthly expenses as a pipeline. Show me each result before the next step.
 1) analyst on docs/requests/recurring-expenses.md. If it lists open questions, stop and ask me.
 2) test-author with the SPEC text. 3) implementer with the SPEC and the test files.
+Then commit all changes with a one-line message, so the reviewer can see them.
 4) expense-reviewer on git diff main...HEAD. Stop on any BLOCKED.
 ```
 
@@ -99,7 +100,7 @@ with string formatting, data exposure). Tools: Read, Grep, Glob, Bash for git di
 Each returns findings as file:line, severity, one-line problem, or "none".
 ```
 
-Commit the feature first (`git add -A` then `git commit -m "Add recurring monthly expenses"`), then:
+The pipeline already committed the feature. If `git status` still shows changes, commit them (`git add -A` then `git commit -m "Add recurring monthly expenses"`). Then:
 
 ```text
 Run correctness-reviewer and security-reviewer in parallel on git diff main...HEAD.
@@ -113,15 +114,16 @@ Type `/tasks` while they run: two agents, side by side. Read the merged list.
 Now the fix loop:
 
 ```text
-Loop at most 3 rounds: implementer fixes only the numbered findings, then expense-reviewer
-reviews. Stop on VERDICT: APPROVE, on the same finding twice in a row, or after round 3.
+Loop at most 3 rounds: implementer fixes only the numbered findings and commits them with a
+one-line message, then expense-reviewer reviews git diff main...HEAD. Stop on VERDICT: APPROVE, on the same finding twice in a row, or after round 3.
 Report how it ended.
 ```
 
-Watch the rounds. Then check the fixes stayed small:
+Watch the rounds. Then check that each round made one small commit:
 
 ```text
-git diff main...HEAD --stat
+git log --oneline -5
+git show --stat HEAD
 ```
 
 ## Task 4: A router
@@ -167,8 +169,8 @@ Select the run and press **Enter**. Drill into the audit phase and open one agen
 
 Try the feature at http://localhost:5173 (backend and frontend running):
 
-1. Add **Rent**, ₹25,000, **bills**, date the 31st of last month, tick **Repeats monthly**.
-2. Click **Repeat next month**. A copy appears dated the last day of this month (or the 31st, when this month has 31 days).
+1. Add **Rent**, ₹25,000, **bills**, date **2026-10-31** (a month with 31 days), tick **Repeats monthly**.
+2. Click **Repeat next month**. A copy appears dated **2026-11-30**: November has only 30 days.
 3. The button is gone from the original; the copy has its own button.
 
 Give the pull request a base that shows only this lab's changes: push the trainer's starting point to your repository (remote `mine`, from M05) as `m07-base`:
@@ -189,6 +191,8 @@ Do not merge.
 git add -A
 git commit -m "M08: orchestration agents, recurring expenses, over-budget warning"
 ```
+
+If git says `nothing to commit`, everything is already committed.
 
 Your work stays on `my-m08`. You do not need to finish or merge it: the next lab starts from the trainer's `m08-orchestration` branch.
 

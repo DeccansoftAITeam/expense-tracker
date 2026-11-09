@@ -192,17 +192,21 @@ git add -A
 git commit -m "Add CSV export with an Export button"
 ```
 
-Add a line on purpose in `backend/app/main.py`, inside the export loop:
+Add a line on purpose in `backend/app/main.py`, inside the export loop, and commit it (the reviewer reads committed changes only, `git diff main...HEAD`):
 
 ```text
 logger.info("exported %s", e["description"])
 ```
 
 ```text
+git commit -am "temp: log description"
+```
+
+```text
 @agent-expense-reviewer review this branch.
 ```
 
-**Expected:** `VERDICT: CHANGES` with a **high** finding for E8 (descriptions in logs). Remove the line (`git restore backend/app/main.py`) and ask again: `VERDICT: APPROVE`.
+**Expected:** `VERDICT: CHANGES` with a **high** finding for E8 (descriptions in logs). Undo the temporary commit (`git reset --hard HEAD~1`) and ask again: `VERDICT: APPROVE`.
 
 ## Finish
 
@@ -210,6 +214,8 @@ logger.info("exported %s", e["description"])
 git add -A
 git commit -m "M07: subagents and CSV export"
 ```
+
+If git says `nothing to commit`, everything is already committed.
 
 Your work stays on `my-m07`. You do not need to finish or merge it: the next lab starts from the trainer's `m07-subagents` branch.
 

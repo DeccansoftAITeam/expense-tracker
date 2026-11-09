@@ -76,7 +76,13 @@ When it asks, commit the failing tests on their own:
 Commit the new failing tests with a one-sentence message.
 ```
 
-Let Claude implement. Then check yourself:
+Let Claude implement. When the tests pass:
+
+```text
+Commit the implementation with a one-sentence message.
+```
+
+Then check yourself:
 
 ```text
 cd backend
@@ -195,6 +201,8 @@ git merge --no-ff my-m04-filter -m "Merge my-m04-filter"
 git add -A
 git commit -m "M04: monthly summary and category filter"
 ```
+
+If git says `nothing to commit`, everything is already committed.
 
 Your work stays on `my-m04`. You do not need to finish or merge it: the next lab starts from the trainer's `m04-plan-implement-verify` branch.
 
