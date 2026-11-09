@@ -2,6 +2,10 @@
 
 You do one lab after each module. All labs build **one app**, the **Expense Tracker**, step by step.
 
+## Where to read the handbooks
+
+Your trainer shares every handbook as Word, PDF and Markdown. Read them from those copies, not from your checkout: the branch you start a lab from holds only the handbooks of the labs before it. In the repository, all handbooks are on `origin/main`, for example `git show origin/main:labs/M04-Plan-Implement-Verify.md`.
+
 ## What you need (install once)
 
 | Tool | Check it | Install |
@@ -113,7 +117,7 @@ So you can:
 
 At the end of each lab you only commit on your own branch. You never merge into `main` and never push to `origin`.
 
-**Your own GitHub repository.** In Lab M05 you create a private GitHub repo and add it as a second remote named `mine`. M08, M09 and M11 push to it. If you start after M05, do M05 Task 1 once first.
+**Your own GitHub repository.** In Lab M05 you create a private GitHub repo and add it as a second remote named `mine`. M08 and M09 push to it, and M11 uses it through the GitHub MCP server. If you start after M05, do M05 Task 1 once first.
 
 ## Run commands (the same in every lab)
 
