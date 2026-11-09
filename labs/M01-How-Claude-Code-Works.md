@@ -151,10 +151,20 @@ The **files** part has grown. Now compact and look again:
 
 ## Task 5: Build the frontend in a background session
 
+A background session normally moves into its own git worktree before it edits files, made from the course repository's `main` branch. For this lab you want it to edit your own branch directly, so create `.claude/settings.local.json` in the project root (it is personal and git-ignored) with:
+
+```json
+{
+  "worktree": {
+    "bgIsolation": "none"
+  }
+}
+```
+
 From the project root:
 
 ```text
-claude --bg "Create frontend/ with Vite and React (.jsx, no TypeScript) as described in docs/TRD.md. The page shows the heading Expense Tracker and nothing else. Run npm install and npm run build."
+claude --bg "Create frontend/ with Vite and React (.jsx, no TypeScript) as described in docs/TRD.md. The page shows the heading Expense Tracker and nothing else. Run npm install and npm run build. Do not commit or push."
 ```
 
 List background sessions:
@@ -193,7 +203,14 @@ Start `claude` and try models and effort:
 /model
 ```
 
-Pick **Sonnet**, then:
+Look at the four models in the picker: **Fable** (hardest, longest tasks), **Opus** (the default), **Sonnet** (daily coding) and **Haiku** (small tasks, subagents). They can all do the same things; they differ in depth, speed and price. You can also switch with an alias, and check which one is in use:
+
+```text
+/model opus
+/status
+```
+
+Now type `/model` again and pick **Sonnet**, then:
 
 ```text
 Rename the health function in backend/app/main.py to health_check and keep the test passing.
@@ -232,6 +249,8 @@ git add -A
 git commit -m "M01: backend health check and frontend shell"
 ```
 
+If git says `nothing to commit`, everything is already committed.
+
 Your work stays on `my-m01`. You do not need to finish or merge it: the next lab starts from the trainer's `m01-how-claude-code-works` branch.
 
 To compare your work with the trainer's:
@@ -247,7 +266,7 @@ git diff my-m01 origin/m01-how-claude-code-works --stat
 - [ ] http://localhost:5173 shows **Expense Tracker**.
 - [ ] You saw Read, Search, Bash and Web tool calls in the transcript.
 - [ ] You used `/add-dir`, `/rename`, `claude --resume`, `/context`, `/compact`, `claude --bg`, `claude agents`, `claude -p`, `/model`, `/effort` and `/usage`.
-- [ ] `node_modules/` and `.venv/` are **not** in `git status` (the `.gitignore` from M00 covers them).
+- [ ] `node_modules/` and `.venv/` are **not** in `git status` (the `.gitignore` from the `starter` branch covers them).
 - [ ] Your work is committed on `my-m01`.
 
 ## If you get stuck
