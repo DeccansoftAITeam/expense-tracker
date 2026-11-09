@@ -150,7 +150,7 @@ Give each test a unique description with Date.now(). Use labels (getByLabel with
 Add an "e2e" script: playwright test. Run it.
 ```
 
-Stop your own dev servers first (Ctrl+C) so Playwright can start its own, or keep them: it reuses running servers.
+**Stop your own backend and frontend first (Ctrl+C).** Playwright then starts both itself, with the backend on `e2e-expenses.db`. If your own backend is still running, Playwright reuses it, and the tests would write into your real `expenses.db`.
 
 ```text
 npm run e2e
@@ -182,6 +182,8 @@ git add -A
 git commit -m "M11: MCP servers and Playwright e2e tests"
 ```
 
+If git says `nothing to commit`, everything is already committed.
+
 Your work stays on `my-m11`. You do not need to finish or merge it: the next lab starts from the trainer's `m11-mcp-connect` branch.
 
 To compare your work with the trainer's:
@@ -202,5 +204,5 @@ git diff my-m11 origin/m11-mcp-connect --stat
 
 - The server stays **pending**: approve it in the session, or run `claude mcp reset-project-choices` and start again.
 - `npx` hangs on Windows: run `npx -y @playwright/mcp@latest --help` once in a terminal to finish the download.
-- Port 8000 or 5173 is busy in `npm run e2e`: stop the running servers, or keep both running so Playwright reuses them.
+- Port 8000 or 5173 is busy in `npm run e2e`: stop the servers you started yourself (Ctrl+C in their terminals), then run it again.
 - Compare with the trainer's branch: `git diff my-m11 origin/m11-mcp-connect --stat`, and open any file with `git show origin/m11-mcp-connect:<path>`.
