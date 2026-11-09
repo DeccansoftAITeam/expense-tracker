@@ -103,10 +103,12 @@ echo '{"tool_input":{"file_path":"backend/.env"}}' | uv run --no-project .claude
 **Expected:** the "Blocked" message, exit code 2. Now in a new Claude session:
 
 ```text
-Add DEBUG=true to backend/.env.
+In backend/uv.lock, change the version line of the fastapi package by hand to 0.1.0.
 ```
 
-**Expected:** the edit is blocked; Claude reads the reason and tells you to change it by hand.
+**Expected:** the edit is blocked by the hook; Claude reads the reason (use uv for lock files) and does not retry the edit.
+
+Why not test it on `backend/.env`? Since M09, the permission rule `Read(./backend/.env)` stops Claude from reading that file, and Claude must read an existing file before editing it, so the edit fails before any hook runs. Permissions and hooks are two layers; the hook also protects files that have no permission rule.
 
 ## Task 3: Block destructive SQL — enforcing E6
 
@@ -133,7 +135,7 @@ Create two hooks:
 2. .claude/hooks/audit_bash.py: PostToolUse for Bash. Append one line to .claude/bash-audit.log:
    UTC timestamp, the cwd from the event, and tool_input.command, separated by tabs. Always exit 0.
 Register both in .claude/settings.json with uv run --no-project "$CLAUDE_PROJECT_DIR/.claude/hooks/<file>".
-Add .claude/bash-audit.log to .gitignore.
+Check that .claude/bash-audit.log is in .gitignore (add it if not).
 ```
 
 Try them:
@@ -174,7 +176,7 @@ What are the rules for logging and for deleting expenses?
 | Ask Claude | Expected |
 |---|---|
 | `Edit frontend/package-lock.json and bump the react version.` | Blocked: use `npm install` instead |
-| `Create backend/.env.example with DEBUG=false.` | Allowed: the example is not a secret |
+| `Create backend/.env.example with DEBUG=false.` | The hook allows it (an example is not a secret), but it is still denied: the M09 rule `Read(./backend/.env.*)` blocks reading the file, and Claude must read an existing file before it can edit it. Both layers apply: the first that says no wins. (To block writes on purpose, add `Edit(...)` deny rules.) |
 | `Run sqlite3 backend/expenses.db "drop table budgets"` | Blocked (any case) |
 
 ## Finish
@@ -183,6 +185,8 @@ What are the rules for logging and for deleting expenses?
 git add -A
 git commit -m "M10: hooks for protection, formatting, audit and rules"
 ```
+
+If git says `nothing to commit`, everything is already committed.
 
 Your work stays on `my-m10`. You do not need to finish or merge it: the next lab starts from the trainer's `m10-hooks` branch.
 
@@ -195,7 +199,7 @@ git diff my-m10 origin/m10-hooks --stat
 ## Done when
 
 - [ ] `/hooks` lists PreToolUse (2), PostToolUse (2), SessionStart (1) from the project, and Notification from your user settings.
-- [ ] Edits to `backend/.env` and lock files are blocked; `.env.example` is allowed.
+- [ ] Edits to lock files are blocked by the hook; `backend/.env` is blocked by the hook script (the pipe test in Task 2) and by the M09 permission rule.
 - [ ] `DELETE FROM expenses` and `DROP TABLE` are blocked by the hook.
 - [ ] A one-line Python edit is formatted by ruff right after the edit.
 - [ ] `.claude/bash-audit.log` records commands and is not in `git status`.
