@@ -82,7 +82,21 @@ Make the `.env` file follow you into new worktrees: create `.worktreeinclude` in
 backend/.env
 ```
 
-Commit it. Open **two terminals** in the project folder.
+Commit it.
+
+By default, `claude --worktree` makes the new worktree from the remote's default branch (`origin/main`, which is the trainer's complete app). You want both worktrees to start from **your** `my-m05`. Add this to `.claude/settings.local.json` (personal, git-ignored; create the file if it does not exist):
+
+```json
+{
+  "worktree": {
+    "baseRef": "head"
+  }
+}
+```
+
+Make sure you are on `my-m05` (`git branch --show-current`). Each worktree gets its own branch: `worktree-budgets` and `worktree-search`.
+
+Open **two terminals** in the project folder.
 
 Terminal 1:
 
@@ -115,7 +129,7 @@ In a third terminal:
 git worktree list
 ```
 
-**Expected:** three folders, each on its own branch. In the budgets session, run the tests yourself with the `!` prefix:
+**Expected:** three folders: your main folder on `my-m05`, and `.claude/worktrees/budgets` and `.claude/worktrees/search` on `worktree-budgets` and `worktree-search`, both starting at the same commit as `my-m05`. In the budgets session, run the tests yourself with the `!` prefix:
 
 ```text
 ! cd backend && uv run pytest -q
@@ -161,7 +175,8 @@ Now update the search branch. In the search session (`claude --worktree search -
 
 ```text
 The base branch has moved. Fetch mine and rebase this branch on mine/my-m05, run npm run build,
-and tell me if anything conflicted. Then push the updated branch.
+and tell me if anything conflicted. Then push the updated branch with git push --force-with-lease
+(a rebased branch needs it; --force-with-lease refuses if someone else pushed in the meantime).
 ```
 
 Merge the search PR on GitHub. Then, in your main folder:
@@ -194,9 +209,10 @@ Read the finding: severity, confidence, category and the exploit scenario. Then:
 Fix it by logging the expense id only (rule E8).
 ```
 
-Run `/security-review` again: no finding. Switch back and remove the test branch:
+Run `/security-review` again: no finding. Throw the fix away (it was only a test), switch back and remove the test branch:
 
 ```text
+git restore backend/app/main.py
 git switch my-m05
 git branch -D log-test
 ```
@@ -222,6 +238,8 @@ git add -A
 git commit -m "M05: budgets, search and review"
 ```
 
+If git says `nothing to commit`, everything is already committed.
+
 Your work stays on `my-m05`. You do not need to finish or merge it: the next lab starts from the trainer's `m05-git-worktrees-review` branch.
 
 To compare your work with the trainer's:
@@ -242,6 +260,7 @@ git diff my-m05 origin/m05-git-worktrees-review --stat
 ## If you get stuck
 
 - `claude --worktree` starts without `backend/.env`: check `.worktreeinclude` is in the main folder and committed.
+- A worktree already has budgets or search in it: it was made from `origin/main`, because the `baseRef` setting was missing. Exit that session, run `git worktree remove --force .claude/worktrees/budgets` and `git branch -D worktree-budgets`, add the setting, and start again.
 - The rebase conflicts in `App.jsx`: ask `Resolve the conflict keeping both the search box and the existing filters.`
-- No GitHub access in class? Do Tasks 3–6 locally: merge with `git merge --no-ff budgets` and `git merge --no-ff search`, and use `/code-review` without a PR number.
+- No GitHub access in class? Do Tasks 3–6 locally: merge with `git merge --no-ff worktree-budgets` and `git merge --no-ff worktree-search` on `my-m05`, and use `/code-review` without a PR number.
 - Compare with the trainer's branch: `git diff my-m05 origin/m05-git-worktrees-review --stat`, and open any file with `git show origin/m05-git-worktrees-review:<path>`.

@@ -233,6 +233,8 @@ git add -A
 git commit -m "M03: CLAUDE.md rules, AGENTS.md, SQLite and archive"
 ```
 
+If git says `nothing to commit`, everything is already committed.
+
 Your work stays on `my-m03`. You do not need to finish or merge it: the next lab starts from the trainer's `m03-context-memory` branch.
 
 To compare your work with the trainer's:

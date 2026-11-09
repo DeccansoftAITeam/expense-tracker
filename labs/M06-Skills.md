@@ -260,6 +260,8 @@ git add -A
 git commit -m "M06: skills, payment method and AmountBadge"
 ```
 
+If git says `nothing to commit`, everything is already committed.
+
 Your work stays on `my-m06`. You do not need to finish or merge it: the next lab starts from the trainer's `m06-skills` branch.
 
 To compare your work with the trainer's:
