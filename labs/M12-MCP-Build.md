@@ -28,7 +28,7 @@ Start from the trainer's finished M11 branch, even if your own `my-m11` is not f
 ```text
 git fetch origin
 git switch -c my-m12 origin/m11-mcp-connect
-python --version        (macOS: python3 --version)   3.10 or newer
+python --version        (macOS: python3 --version)   3.12 or newer
 uv --version
 node --version          22.19 or newer, for the Inspector
 ```
@@ -57,9 +57,17 @@ From the project root:
 ```text
 mkdir mcp-server
 cd mcp-server
-uv init --bare --name expense-mcp-server
+uv init --bare --name expense-mcp-server --python 3.12
 uv add "mcp[cli]>=2.0.0" httpx
 uv add --dev pytest
+```
+
+Then add the pytest settings at the end of `mcp-server/pyproject.toml`, so the tests in Task 6 can `import server`:
+
+```text
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
 ```
 
 Claude prompt that does the same:
@@ -159,7 +167,7 @@ Go back to the project root and register it for the team (project scope):
 
 ```text
 cd ..
-claude mcp add --scope project --transport stdio expenses --env EXPENSE_API_URL=http://localhost:8000 -- uv run --directory mcp-server server.py
+claude mcp add --scope project --transport stdio --env EXPENSE_API_URL=http://localhost:8000 expenses -- uv run --directory mcp-server server.py
 ```
 
 Open `.mcp.json`: the `expenses` entry is next to `filesystem` and `playwright`. Add read-only tools to the allow list in `.claude/settings.json`:
@@ -248,6 +256,8 @@ In `server.py`, swap the last line for `mcp.run(transport="streamable-http", por
 git add -A
 git commit -m "M12: expenses MCP server with tools, resources, prompt and tests"
 ```
+
+If git says `nothing to commit`, everything is already committed.
 
 Your work stays on `my-m12`. You do not need to finish or merge it: the next lab starts from the trainer's `m12-mcp-build` branch.
 
