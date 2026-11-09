@@ -202,6 +202,8 @@ git add -A
 git commit -m "M02: add and list expenses (in memory)"
 ```
 
+If git says `nothing to commit`, everything is already committed.
+
 Your work stays on `my-m02`. You do not need to finish or merge it: the next lab starts from the trainer's `m02-first-session` branch.
 
 To compare your work with the trainer's:
