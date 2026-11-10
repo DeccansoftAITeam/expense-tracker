@@ -18,6 +18,18 @@ Your trainer shares every handbook as Word, PDF and Markdown. Read them from tho
 | VS Code | | code.visualstudio.com |
 | gh (GitHub CLI) | `gh --version` | cli.github.com (needed from M05) |
 
+### Installing uv
+
+uv runs the backend, its tests and the MCP server. Install it once:
+
+1. Windows (PowerShell): `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
+   macOS (Terminal): `curl -LsSf https://astral.sh/uv/install.sh | sh` (or `brew install uv`)
+2. Close the terminal and open a new one.
+3. Check it: `uv --version`
+4. Get Python 3.12 for uv: `uv python install 3.12`
+
+Lab M01 has the same steps with help for when `uv` is not found.
+
 ## The app
 
 A person records what they spend. Each **expense** has a description, an amount, a date and a category.
