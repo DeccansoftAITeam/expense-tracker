@@ -14,13 +14,6 @@
 
 Start from the trainer's finished M02 branch, even if your own `my-m02` is not finished. Your `my-m02` branch stays as it is; you can go back to it any time with `git switch my-m02`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
 
-**uv must be installed.** Check with `uv --version`. If it is not found, install it, then open a new terminal:
-
-- Windows (PowerShell): `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
-- macOS (Terminal): `curl -LsSf https://astral.sh/uv/install.sh | sh`
-
-Then run `uv python install 3.12` once. (Full steps: Lab M01, "Install uv".)
-
 ```text
 git fetch origin
 git switch -c my-m03 origin/m02-first-session

@@ -13,44 +13,6 @@ On the way you watch the **agent loop** (gather → act → verify), the **tools
 
 Start from the trainer's finished M00 branch, even if your own `my-m00` is not finished. Your `my-m00` branch stays as it is; you can go back to it any time with `git switch my-m00`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
 
-### Install uv (once per computer)
-
-**uv** installs Python packages and runs the backend and its tests. Every lab from M01 on uses it.
-
-1. Check whether it is already installed:
-
-   ```text
-   uv --version
-   ```
-
-   If it prints a version (for example `uv 0.9.x`), skip to step 4.
-
-2. Install it.
-
-   Windows (PowerShell):
-
-   ```text
-   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-   ```
-
-   macOS (Terminal):
-
-   ```text
-   curl -LsSf https://astral.sh/uv/install.sh | sh
-   ```
-
-   (On macOS with Homebrew, `brew install uv` also works.)
-
-3. **Close the terminal and open a new one**, so it finds `uv`. Then run `uv --version` again.
-
-4. Make sure Python 3.12 is available to uv (it downloads it if needed):
-
-   ```text
-   uv python install 3.12
-   ```
-
-If `uv --version` still says "not found" in a new terminal: on Windows, sign out and in again, or check that `%USERPROFILE%\.local\bin` is on your PATH; on macOS, run `source ~/.zshrc` or check that `~/.local/bin` is on your PATH.
-
 Claude Code must be installed and signed in (`claude --version` works). If not, do Task 1 of Lab M02 first and come back.
 
 ```text

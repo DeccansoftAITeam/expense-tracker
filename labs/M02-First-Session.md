@@ -15,13 +15,6 @@ On the way you practise **install and sign-in checks**, **permission modes**, **
 
 Start from the trainer's finished M01 branch, even if your own `my-m01` is not finished. Your `my-m01` branch stays as it is; you can go back to it any time with `git switch my-m01`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
 
-**uv must be installed.** Check with `uv --version`. If it is not found, install it, then open a new terminal:
-
-- Windows (PowerShell): `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
-- macOS (Terminal): `curl -LsSf https://astral.sh/uv/install.sh | sh`
-
-Then run `uv python install 3.12` once. (Full steps: Lab M01, "Install uv".)
-
 ```text
 git fetch origin
 git switch -c my-m02 origin/m01-how-claude-code-works
