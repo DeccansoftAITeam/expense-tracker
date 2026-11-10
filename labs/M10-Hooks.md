@@ -19,6 +19,13 @@ Hooks that turn "please always" into **always**. The scripts are Python and run 
 
 Start from the trainer's finished M09 branch, even if your own `my-m09` is not finished. Your `my-m09` branch stays as it is; you can go back to it any time with `git switch my-m09`. Commit what you have on it first (`git add -A`, then `git commit -m "wip"`), so unfinished changes do not come along.
 
+**uv must be installed.** Check with `uv --version`. If it is not found, install it, then open a new terminal:
+
+- Windows (PowerShell): `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
+- macOS (Terminal): `curl -LsSf https://astral.sh/uv/install.sh | sh`
+
+Then run `uv python install 3.12` once. (Full steps: Lab M01, "Install uv".)
+
 ```text
 git fetch origin
 git switch -c my-m10 origin/m09-permissions
